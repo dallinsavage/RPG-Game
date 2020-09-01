@@ -9,6 +9,7 @@ public abstract class Character {
 	private int damage;
 	private int attackBonus;
 	private int endurance;
+	private int gold;
 	Character() {
 	}
 	Character(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
@@ -37,6 +38,12 @@ public abstract class Character {
 	}
 	public void setExp(int newExp) {
 		exp = newExp;
+	}
+	public int getGold() {
+		return gold;
+	}
+	public void setGold(int newGold) {
+		gold = newGold;
 	}
 	public boolean canLevelUp() {
 		int expNeeded = 50 * getLevel();
@@ -118,8 +125,9 @@ public abstract class Character {
 	
 	class Skeleton extends Enemy {
 		Skeleton() {
-			super(3, 3, 3, 3);
+			super(3, 3, 3, 4);
 			setExp(10);
+			setGold((int)(Math.random() * 10));
 		}
 		public String stringHp() {
 			return "hp = " + getHp();
@@ -133,6 +141,7 @@ public abstract class Character {
 		Zombie() {
 			super(2, 2, 5, 3);
 			setExp(10);
+			setGold((int)(Math.random() * 10));
 		}
 		public String stringHp() {
 			return "hp = " + getHp();
@@ -144,8 +153,9 @@ public abstract class Character {
 	
 	class Tank extends Enemy {
 		Tank() {
-			super(5, 3, 1, 3);
+			super(5, 4, 1, 3);
 			setExp(15);
+			setGold((int)(Math.random() * 20));
 		}
 		public String stringHp() {
 			return "hp = " + getHp();
@@ -237,6 +247,7 @@ public abstract class Character {
 						if (enemies.get(z).getHp() <= 0) {
 							System.out.println(enemies.get(z).getName() + " has been slain");
 							player1.setExp(player1.getExp() + enemies.get(z).getExp());
+							player1.setGold(player1.getGold() + enemies.get(z).getGold());
 							enemies.remove(z);
 							score++;
 							z--;
@@ -253,6 +264,7 @@ public abstract class Character {
 				else {
 					System.out.println("You died");
 					System.out.println("Final score = " + score);
+					System.out.println("you had " + player1.getGold() + " gold");
 					alive = false;
 					break;
 					
