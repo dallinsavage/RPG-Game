@@ -6,11 +6,11 @@ public abstract class Character {
 	private int armor;
 	private int damage;
 	private int attackBonus;
-	
+	private int endurance;
 	Character() {
 	}
-	Character(double newHp, int newArmor, int newDamage, int newAttackBonus) {
-		hp = newHp;
+	Character(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
+		hp = newEndurance * 10;
 		armor = newArmor;
 		damage = newDamage;
 		attackBonus = newAttackBonus;
@@ -49,8 +49,8 @@ public abstract class Character {
 	class Player extends Character {
 		Player() {
 		}
-		Player(double newHp, int newArmor, int newDamage, int newAttackBonus) {
-			super(newHp, newArmor, newDamage, newAttackBonus);
+		Player(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
+			super(newEndurance, newArmor, newDamage, newAttackBonus);
 		}
 		public String getName() {
 			return "Player";
@@ -63,14 +63,14 @@ public abstract class Character {
 	abstract class Enemy extends Character {
 		Enemy() {
 		}
-		Enemy(double newHp, int newArmor, int newDamage, int newAttackBonus) {
-			super(newHp, newArmor, newDamage, newAttackBonus);
+		Enemy(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
+			super(newEndurance, newArmor, newDamage, newAttackBonus);
 		}
 	}
 	
 	class Skeleton extends Enemy {
 		Skeleton() {
-			super(20, 10, 5, 2);
+			super(3, 3, 3, 3);
 		}
 		public String stringHp() {
 			return "hp = " + getHp();
@@ -82,7 +82,7 @@ public abstract class Character {
 	
 	class Zombie extends Enemy {
 		Zombie() {
-			super(30, 5, 10, 0);
+			super(2, 2, 5, 3);
 		}
 		public String stringHp() {
 			return "hp = " + getHp();
@@ -94,7 +94,7 @@ public abstract class Character {
 	
 	class Tank extends Enemy {
 		Tank() {
-			super(50, 12, 2, 4);
+			super(5, 3, 1, 3);
 		}
 		public String stringHp() {
 			return "hp = " + getHp();
@@ -111,12 +111,35 @@ public abstract class Character {
 		
 		//spawn the player
 		
-		System.out.println("Enter player hp, armor between(0 and 19), damage, and attack bonus");
-		int playerHp = input.nextInt();
-		int playerArmor = input.nextInt();
-		int playerDamage = input.nextInt();
-		int playerAttackBonus = input.nextInt();
-		Player player1 = new Player(playerHp, playerArmor, playerDamage, playerAttackBonus);
+		int playerEndurance = 1;
+		int playerArmor = 0;
+		int playerDamage = 1;
+		int playerAttackBonus = 0;
+		for (int points = 25; points > 0; points--) {
+			System.out.println("Destribute your " + points + " points");
+			System.out.println("1: Endurance");
+			System.out.println("2: Armor");
+			System.out.println("3: Damage");
+			System.out.println("4: Attack bonus");
+			int pointSelect = input.nextInt();
+			if (pointSelect == 1) {
+				playerEndurance = playerEndurance + 1;
+			}
+			else if (pointSelect == 2) {
+				playerArmor = playerArmor + 1;
+			}
+			else if (pointSelect == 3) {
+				playerDamage = playerDamage + 1;
+			}
+			else if (pointSelect == 4) {
+				playerAttackBonus = playerAttackBonus + 1;
+			}
+			else {
+				System.out.println("Enter a valid selection");
+				points++;
+			}
+		}
+		Player player1 = new Player(playerEndurance, playerArmor, playerDamage, playerAttackBonus);
 		int score = 0;
 		boolean alive = true;
 		while (alive) {
