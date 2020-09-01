@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public abstract class Character {
+	private int level = 1;
+	private int exp;
 	private double hp;
 	private int armor;
 	private int damage;
@@ -30,6 +32,49 @@ public abstract class Character {
 	public int getAttackBonus() {
 		return attackBonus;
 	}
+	public int getExp() {
+		return exp;
+	}
+	public void setExp(int newExp) {
+		exp = newExp;
+	}
+	public boolean canLevelUp() {
+		int expNeeded = 50 * getLevel();
+		if (exp - expNeeded >= 0) {
+			return true;
+		}
+		else return false;
+	}
+	public int getLevel() {
+		return level;
+	}
+	public void levelUp() {
+		int points = 1;
+		Scanner input = new Scanner(System.in);
+		System.out.println("Congratulations, you leveled up");
+		System.out.println("Destribute your " + points + " point");
+		System.out.println("1: Endurance");
+		System.out.println("2: Armor");
+		System.out.println("3: Damage");
+		System.out.println("4: Attack bonus");
+		int pointSelect = input.nextInt();
+		for (points = 1; points > 0; points--) {
+		if (pointSelect == 1) {
+			endurance = endurance + 1;
+		}
+		else if (pointSelect == 2) {
+			armor = armor + 1;
+		}
+		else if (pointSelect == 3) {
+			damage = damage + 1;
+		}
+		else if (pointSelect == 4) {
+			attackBonus = attackBonus + 1;
+		}
+		}
+		level = level + 1;
+		exp = exp - (50 * level);
+	}
 	public void doDamage(Character target) {
 		double attack = (Math.random() * 10) + (Math.random() * 10) ;
 		double targetHp = target.getHp();
@@ -48,9 +93,12 @@ public abstract class Character {
 
 	class Player extends Character {
 		Player() {
+			setExp(0);
+			
 		}
 		Player(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
 			super(newEndurance, newArmor, newDamage, newAttackBonus);
+			setExp(0);
 		}
 		public String getName() {
 			return "Player";
@@ -71,6 +119,7 @@ public abstract class Character {
 	class Skeleton extends Enemy {
 		Skeleton() {
 			super(3, 3, 3, 3);
+			setExp(10);
 		}
 		public String stringHp() {
 			return "hp = " + getHp();
@@ -83,6 +132,7 @@ public abstract class Character {
 	class Zombie extends Enemy {
 		Zombie() {
 			super(2, 2, 5, 3);
+			setExp(10);
 		}
 		public String stringHp() {
 			return "hp = " + getHp();
@@ -95,6 +145,7 @@ public abstract class Character {
 	class Tank extends Enemy {
 		Tank() {
 			super(5, 3, 1, 3);
+			setExp(15);
 		}
 		public String stringHp() {
 			return "hp = " + getHp();
@@ -143,9 +194,13 @@ public abstract class Character {
 		int score = 0;
 		boolean alive = true;
 		while (alive) {
+			if (player1.canLevelUp()) {
+				player1.levelUp();
+			}
+			
 			
 			//spawn enemies
-			
+
 			System.out.println("How many Enemies do you want to spawn");
 			int numberOfEnemies = input.nextInt();
 			ArrayList<Character> enemies = new ArrayList<Character>();
@@ -181,6 +236,7 @@ public abstract class Character {
 					for (int z = 0; z < enemies.size(); z++) {
 						if (enemies.get(z).getHp() <= 0) {
 							System.out.println(enemies.get(z).getName() + " has been slain");
+							player1.setExp(player1.getExp() + enemies.get(z).getExp());
 							enemies.remove(z);
 							score++;
 							z--;
