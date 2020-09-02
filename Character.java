@@ -1,11 +1,10 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public abstract class Character {
 	private int level = 1;
 	private int exp;
-	private double hp;
-	private double maxHp;
+	private int hp;
+	private int maxHp;
 	private int armor;
 	private int damage;
 	private int attackBonus;
@@ -21,16 +20,16 @@ public abstract class Character {
 		damage = newDamage;
 		attackBonus = newAttackBonus;
 	}
-	public void setHp(double newHp) {
+	public void setHp(int newHp) {
 		hp = newHp;
 	}
 	public void setMaxHp() {
 		maxHp = getEndurance() * 10;
 	}
-	public double getHp() {
+	public int getHp() {
 		return hp;
 	}
-	public double getMaxHp() {
+	public int getMaxHp() {
 		return maxHp;
 	}
 	public int getEndurance() {
@@ -78,32 +77,28 @@ public abstract class Character {
 		System.out.println("4: Attack bonus");
 		int pointSelect = input.nextInt();
 		for (points = 1; points > 0; points--) {
-		if (pointSelect == 1) {
-			endurance = endurance + 1;
-		}
-		else if (pointSelect == 2) {
-			armor = armor + 1;
-		}
-		else if (pointSelect == 3) {
-			damage = damage + 1;
-		}
-		else if (pointSelect == 4) {
-			attackBonus = attackBonus + 1;
+		switch (pointSelect) {
+		case 1:	endurance = endurance + 1; break;
+		case 2: armor = armor + 1; break;
+		case 3: damage = damage + 1; break;
+		case 4: attackBonus = attackBonus + 1; break;
+		default: System.out.println("Enter a valid selection"); break;
 		}
 		}
 		level = level + 1;
 		exp = exp - (50 * level);
+		maxHp = endurance * 10;
 	}
 	public void doDamage(Character target) {
 		int attack = (int)((Math.random() * 10) + (Math.random() * 10)) ;
-		double targetHp = target.getHp();
+		int targetHp = target.getHp();
 		int targetArmor = target.getArmor();
 		if (attack + attackBonus > targetArmor) {
 			target.setHp(targetHp - damage);
-			System.out.println(getName() + (" hit"));
+			System.out.println(getName() + (" hit ") + target.getName() + " for " + damage + " damage");
 		}
 		else {
-			System.out.println(getName() + " miss");
+			System.out.println(getName() + " missed " + target.getName());
 		}
 	}
 	public abstract String getName();
