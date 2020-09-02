@@ -89,6 +89,19 @@ public abstract class Character {
 		exp = exp - (50 * level);
 		maxHp = endurance * 10;
 	}
+	public void increaseEndurance(int num) {
+		endurance = endurance + num;
+		setMaxHp();
+	}
+	public void increaseArmor(int num) {
+		armor = armor + num;
+	}
+	public void increaseDamage(int num) {
+		damage = damage + num;
+	}
+	public void increaseAttackBonus(int num) {
+		attackBonus = attackBonus + num;
+	}
 	public void doDamage(Character target) {
 		int attack = (int)((Math.random() * 10) + (Math.random() * 10)) ;
 		int targetHp = target.getHp();
