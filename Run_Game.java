@@ -46,6 +46,7 @@ public class Run_Game {
 			System.out.println("What would you like to do");
 			System.out.println("1: Continue adventure");
 			System.out.println("2: Rest");
+			System.out.println("3: Enter shop");
 			int doNext = input.nextInt();
 			if (doNext == 1) {
 			
@@ -114,7 +115,72 @@ public class Run_Game {
 				}
 			}
 		}
-			else player1.rest();
+			else  if (doNext == 2) {
+				player1.rest();
+			}
+			else if (doNext == 3) {				
+				boolean inShop = true;
+				int select = 0;
+				while (select != 5) {
+				System.out.println("What would you like to buy");
+				System.out.println("You have " + player1.getGold() + " gold");
+				System.out.println("1: Potion of endurance (50 gold)");
+				System.out.println("2: Better armor (100 gold)");
+				System.out.println("3: Potion of strength (50 gold)");
+				System.out.println("4: Better weapon (100 gold)");
+				System.out.println("5: Exit");
+				select = input.nextInt();
+				if (select == 1) {
+					if (player1.getGold() >= 50) {
+					player1.increaseEndurance(1);
+					player1.setGold(player1.getGold() - 50);
+					System.out.println("Purchase successful");
+					}
+					else {
+					System.out.println("Not enough gold");
+					}
+				}
+					else if (select == 2) {
+						if (player1.getGold() >= 100) {
+							player1.increaseArmor(1);
+							player1.setGold(player1.getGold() - 100);
+							System.out.println("Purchase successful");
+					}
+						else {
+						System.out.println("Not enough gold");
+						}
+					}
+					else if (select == 3) {
+						if (player1.getGold() >= 50) {
+						player1.increaseDamage(1);
+						player1.setGold(player1.getGold() - 50);
+						System.out.println("Purchase successful");
+					}
+						else {
+							System.out.println("Not enough gold");
+					}
+					}
+					else if (select == 4) {
+						if (player1.getGold() >= 100) {
+						player1.increaseAttackBonus(1);
+						player1.setGold(player1.getGold() - 100);
+						System.out.println("Purchase successful");
+						}
+						else {
+							System.out.println("Not enough gold");
+					}
+					}
+					else if (select == 5) {
+						inShop = false;
+					}
+					else {
+						System.out.println("Enter a valid selection");
+				}
+			}
+			}
+			else {
+				System.out.println("Enter a valid selection");
+			}
 		}
 	}
 }
