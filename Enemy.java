@@ -47,3 +47,16 @@ class Tank extends Enemy {
 		return "Tank";
 	}
 }
+class Boss extends Enemy {
+	Boss() {
+		super(10, 4, 5, 3);
+		setExp(150);
+		setGold((int)(Math.random() * 100) + 50);
+	}
+	public String stringHp() {
+		return "hp = " + getHp();
+	}
+	public String getName() {
+		return "Boss";
+	}
+}
