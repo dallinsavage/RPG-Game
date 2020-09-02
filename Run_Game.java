@@ -12,28 +12,28 @@ public class Run_Game {
 		int playerArmor = 0;
 		int playerDamage = 1;
 		int playerAttackBonus = 0;
-		for (int points = 25; points > 0; points--) {
+		int points = 25;
+		while (points > 0) {
 			System.out.println("Destribute your " + points + " points");
+			System.out.println("Enter a catagorie");
 			System.out.println("1: Endurance");
 			System.out.println("2: Armor");
 			System.out.println("3: Damage");
 			System.out.println("4: Attack bonus");
 			int pointSelect = input.nextInt();
-			if (pointSelect == 1) {
-				playerEndurance = playerEndurance + 1;
-			}
-			else if (pointSelect == 2) {
-				playerArmor = playerArmor + 1;
-			}
-			else if (pointSelect == 3) {
-				playerDamage = playerDamage + 1;
-			}
-			else if (pointSelect == 4) {
-				playerAttackBonus = playerAttackBonus + 1;
+			System.out.println("How many points to you want in this catagorie");
+			int amount = input.nextInt();
+			if (amount > points) {
+				System.out.println("you dont have that many points left");
 			}
 			else {
-				System.out.println("Enter a valid selection");
-				points++;
+			switch (pointSelect) {
+			case 1: playerEndurance = playerEndurance + amount; points = points - amount; break;
+			case 2:	playerArmor = playerArmor + amount; points = points - amount; break;
+			case 3:	playerDamage = playerDamage + amount; points = points - amount; break;
+			case 4: playerAttackBonus = playerAttackBonus + amount; points = points - amount; break;
+			default: System.out.println("Enter a valid selection"); break;
+			}
 			}
 		}
 		Player player1 = new Player(playerEndurance, playerArmor, playerDamage, playerAttackBonus);
@@ -59,19 +59,14 @@ public class Run_Game {
 				System.out.println("1: Skeleton");
 				System.out.println("2: Zombie");
 				System.out.println("3: Tank");
+				System.out.println("4: Boss");
 				int select = input.nextInt();
-				if (select == 1) {
-					enemies.add(new Skeleton());
-				}
-				else if (select == 2) {
-					enemies.add(new Zombie());
-				}
-				else if (select == 3) {
-					enemies.add(new Tank());
-				}
-				else {
-					System.out.println("enter a valid selection");
-					i--;
+				switch (select) {
+				case 1: enemies.add(new Skeleton()); break;
+				case 2: enemies.add(new Zombie()); break;
+				case 3:	enemies.add(new Tank()); break;
+				case 4:	enemies.add(new Tank()); break;
+				default: System.out.println("enter a valid selection"); i--;
 				}
 
 			}
@@ -82,6 +77,10 @@ public class Run_Game {
 				if (player1.getHp() > 0) {
 					System.out.println("Choose target between 0 and " + (enemies.size() - 1));
 					int target = input.nextInt();
+					if (target > enemies.size() - 1) {
+						System.out.println("Enter a valid target");
+					}
+					else {
 					player1.doDamage(enemies.get(target));
 					for (int z = 0; z < enemies.size(); z++) {
 						if (enemies.get(z).getHp() <= 0) {
@@ -95,11 +94,15 @@ public class Run_Game {
 					}
 					for (int x = 0; x < enemies.size(); x++) {
 						enemies.get(x).doDamage(player1);
+						if (player1.getHp() < 0) {
+						player1.setHp(0);
+						}
 					}
 					System.out.println(player1.getName() + " " + player1.stringHp());
 					for (int y = 0; y < enemies.size(); y++) {
 						System.out.println(enemies.get(y).getName() + " " + enemies.get(y).stringHp());
 					}
+				}
 				}
 				else {
 					System.out.println("You died");
