@@ -1,4 +1,4 @@
-public class Player extends Character {
+  public class Player extends Character {
 	Player() {
 		setExp(0);
 		setGold(0);
@@ -16,6 +16,6 @@ public class Player extends Character {
 	}
 	public void rest() {
 		setHp(getMaxHp());
-		System.out.println("You feel well rested");
+		System.out.println("You feel well rested, Hp restored");
 	}
 }
