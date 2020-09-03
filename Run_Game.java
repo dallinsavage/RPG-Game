@@ -15,7 +15,7 @@ public class Run_Game {
 		int points = 25;
 		while (points > 0) {
 			System.out.println("Destribute your " + points + " points");
-			System.out.println("Enter a catagorie");
+			System.out.println("Enter a category");
 			System.out.println("1: Endurance");
 			System.out.println("2: Armor");
 			System.out.println("3: Damage");
