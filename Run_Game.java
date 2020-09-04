@@ -66,7 +66,7 @@ public class Run_Game {
 				case 1: enemies.add(new Skeleton()); break;
 				case 2: enemies.add(new Zombie()); break;
 				case 3:	enemies.add(new Tank()); break;
-				case 4:	enemies.add(new Tank()); break;
+				case 4:	enemies.add(new Boss()); break;
 				default: System.out.println("enter a valid selection"); i--;
 				}
 
@@ -85,7 +85,7 @@ public class Run_Game {
 					player1.doDamage(enemies.get(target));
 					for (int z = 0; z < enemies.size(); z++) {
 						if (enemies.get(z).getHp() <= 0) {
-							System.out.println(enemies.get(z).getName() + " has been slain");
+							System.out.println(enemies.get(z).getName() + " has been slain " + enemies.get(z).getGold() + " Gold dropped");
 							player1.setExp(player1.getExp() + enemies.get(z).getExp());
 							player1.setGold(player1.getGold() + enemies.get(z).getGold());
 							enemies.remove(z);
