@@ -1,6 +1,10 @@
 import java.util.Scanner;
 
+import javafx.scene.shape.Circle;
+
 public abstract class Character {
+	private int xValue;
+	private int yValue;
 	private int level = 1;
 	private int exp;
 	private int hp;
@@ -19,6 +23,18 @@ public abstract class Character {
 		armor = newArmor;
 		damage = newDamage;
 		attackBonus = newAttackBonus;
+	}
+	public int getXValue() {
+		return xValue;
+	}
+	public void setXValue(int newX) {
+		xValue = newX;
+	}
+	public void setYValue(int newY) {
+		yValue = newY;
+	}
+	public int getYValue() {
+		return yValue;
 	}
 	public void setHp(int newHp) {
 		hp = newHp;
@@ -116,4 +132,5 @@ public abstract class Character {
 	}
 	public abstract String getName();
 	public abstract String stringHp();
+	public abstract Circle draw(int x, int y);
 }
