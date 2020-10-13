@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Run_Game {
+		
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
 		
@@ -183,4 +184,3 @@ public class Run_Game {
 			}
 		}
 	}
-}
