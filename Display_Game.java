@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Display_Game extends Application {
 	
@@ -38,7 +43,7 @@ public class Display_Game extends Application {
 		//Spawn Player
 
 		Label pointsLeft = new Label("Points left");
-		TextField points = new TextField("25");
+		TextField points = new TextField("2");
 		points.setEditable(false);
 		Label armor = new Label("Armor");
 		Label damage = new Label("Damage");
@@ -110,6 +115,7 @@ public class Display_Game extends Application {
 		
 		ArrayList<Character> enemies = new ArrayList<Character>();
 		spawn.setOnAction(e -> {
+		primaryStage.setScene(combat);
 		int numOfSkeletons =	Integer.parseInt(skeletonNum.getText());
 		int numOfZombies =	Integer.parseInt(zombieNum.getText());
 		int numOfTanks =	Integer.parseInt(tankNum.getText());
@@ -126,7 +132,11 @@ public class Display_Game extends Application {
 		for (int b = 0; b < numOfBoss; b++) {
 			enemies.add(new Boss());
 		}
-		primaryStage.setScene(combat);
+		
+		for (int i = 0; i < enemies.size(); i++) {
+			enemies.get(i).draw(500, i * 50);
+			combatPane.getChildren().add(enemies.get(i).draw(500, (500 / enemies.size()) + i * 50));
+		}
 		});
 
 		
@@ -138,7 +148,7 @@ public class Display_Game extends Application {
 		HBox campHBox = new HBox(200);
 		campHBox.setAlignment(Pos.CENTER);
 		campHBox.getChildren().addAll(btRest, btShop, btCombat);
-		
+		campPane.setCenter(campHBox);
 		
 		//Camp events
 		
@@ -200,9 +210,34 @@ public class Display_Game extends Application {
 		
 		
 		//Combat
-		combatPane.getChildren().add(player1.drawPlayer());
+		combatPane.getChildren().add(player1.draw(100, 250));
+		TextField targetSelect = new TextField("0"); 
+		Label target = new Label("Target");
+		Button btTarget = new Button("Attack");
+		HBox targeting = new HBox(20);
+		targeting.getChildren().addAll(target, targetSelect, btTarget);
+		combatPane.getChildren().add(targeting);
+		targeting.setAlignment(Pos.BOTTOM_CENTER);
 		
-		campPane.setCenter(campHBox);
+		
+		//Combat events
+		EventHandler<ActionEvent> movePlayerRight = e -> {
+			player1.setXValue(player1.getXValue() + 50);
+		};
+		EventHandler<ActionEvent> movePlayerLeft = e -> {
+			player1.setXValue(player1.getXValue() - 50);
+		};
+		EventHandler<ActionEvent> moveEnemyRight = e -> {
+			enemies.get(0).setXValue(player1.getXValue() + 50);
+		};
+		EventHandler<ActionEvent> moveEnemyLeft = e -> {
+			player1.setXValue(player1.getXValue() - 50);
+		};
+		btTarget.setOnAction(e -> {
+			Timeline animation = new Timeline(new KeyFrame(Duration.millis(500), movePlayerRight), new KeyFrame(Duration.millis(500), movePlayerLeft)
+					);
+		});
+		
 		primaryStage.setTitle("Spawn");
 		primaryStage.setScene(spawnPlayer);
 		primaryStage.show();
