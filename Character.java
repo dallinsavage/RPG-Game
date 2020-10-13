@@ -3,8 +3,8 @@ import java.util.Scanner;
 public abstract class Character {
 	private int level = 1;
 	private int exp;
-	private static int hp;
-	private static int maxHp;
+	private int hp;
+	private int maxHp;
 	private int armor;
 	private int damage;
 	private int attackBonus;
@@ -20,7 +20,7 @@ public abstract class Character {
 		damage = newDamage;
 		attackBonus = newAttackBonus;
 	}
-	public static void setHp(int newHp) {
+	public void setHp(int newHp) {
 		hp = newHp;
 	}
 	public void setMaxHp() {
@@ -29,7 +29,7 @@ public abstract class Character {
 	public int getHp() {
 		return hp;
 	}
-	public static int getMaxHp() {
+	public int getMaxHp() {
 		return maxHp;
 	}
 	public int getEndurance() {
@@ -50,7 +50,7 @@ public abstract class Character {
 	public void setExp(int newExp) {
 		exp = newExp;
 	}
-	public static int getGold() {
+	public int getGold() {
 		return gold;
 	}
 	public void setGold(int newGold) {
@@ -107,7 +107,7 @@ public abstract class Character {
 		int targetHp = target.getHp();
 		int targetArmor = target.getArmor();
 		if (attack + attackBonus > targetArmor) {
-			Character.setHp(targetHp - damage);
+			target.setHp(targetHp - damage);
 			System.out.println(getName() + (" hit ") + target.getName() + " for " + damage + " damage");
 		}
 		else {
