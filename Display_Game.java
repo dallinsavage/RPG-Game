@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -100,8 +102,32 @@ public class Display_Game extends Application {
 		TextField tankNum = new TextField("0");
 		Label boss = new Label("Boss");
 		TextField bossNum = new TextField("0");
-		spawnEnemiesPane.addColumn(0, skeleton, zombie, tank, boss);
+		spawnEnemiesPane.setAlignment(Pos.CENTER);
+		spawnEnemiesPane.addColumn(0, skeleton, zombie, tank, boss, spawn);
 		spawnEnemiesPane.addColumn(1, skeletonNum, zombieNum, tankNum, bossNum);
+		
+		//Spawn Enemies events
+		
+		ArrayList<Character> enemies = new ArrayList<Character>();
+		spawn.setOnAction(e -> {
+		int numOfSkeletons =	Integer.parseInt(skeletonNum.getText());
+		int numOfZombies =	Integer.parseInt(zombieNum.getText());
+		int numOfTanks =	Integer.parseInt(tankNum.getText());
+		int numOfBoss =	Integer.parseInt(bossNum.getText());
+		for (int s = 0; s < numOfSkeletons; s++) {
+			enemies.add(new Skeleton());
+		}
+		for (int z = 0; z < numOfZombies; z++) {
+			enemies.add(new Zombie());
+		}
+		for (int t = 0; t < numOfTanks; t++) {
+			enemies.add(new Tank());
+		}
+		for (int b = 0; b < numOfBoss; b++) {
+			enemies.add(new Boss());
+		}
+		primaryStage.setScene(combat);
+		});
 
 		
 		//Camp
@@ -124,7 +150,7 @@ public class Display_Game extends Application {
 			primaryStage.setTitle("Shop");
 		});
 		btCombat.setOnAction(e -> {
-			primaryStage.setScene(combat);
+			primaryStage.setScene(spawnEnemies);
 			primaryStage.setTitle("Adventure");
 		});
 		
@@ -136,10 +162,10 @@ public class Display_Game extends Application {
 		Button btArmor = new Button("Better Armor (100g)");
 		Button btStrength = new Button("Potion of strength (50g)");
 		Button btAttack = new Button("Better Weapon (100g)");
-		shopPane.addColumn(0, btEndurance);
-		shopPane.addColumn(1, btArmor);
-		shopPane.addRow(1, btStrength);
-		shopPane.addRow(1, btAttack);
+		Button back = new Button("Back");
+		shopPane.addColumn(0, btEndurance, btArmor);
+		shopPane.addColumn(1, btStrength, btAttack, back);
+
 		shopPane.setAlignment(Pos.CENTER);
 		shopPane.setHgap(50);
 		shopPane.setVgap(50);
@@ -165,6 +191,10 @@ public class Display_Game extends Application {
 			if (player1.getGold() >= 100) {
 				player1.increaseAttackBonus(1);
 			}
+		});
+		back.setOnAction(e -> {
+			primaryStage.setScene(camp);
+			primaryStage.setTitle("Camp");
 		});
 	
 		
