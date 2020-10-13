@@ -1,3 +1,6 @@
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+
 public abstract class Enemy extends Character {
 	Enemy() {
 	}
@@ -18,6 +21,12 @@ class Skeleton extends Enemy {
 	public String getName() {
 		return "Skeleton";
 	}
+	public Circle drawSkeleton() {
+		Circle skeleton = new Circle();
+		skeleton.setFill(Color.WHITE);
+		skeleton.setStroke(Color.BLACK);
+		return skeleton;
+	}
 }
 
 class Zombie extends Enemy {
@@ -31,6 +40,12 @@ class Zombie extends Enemy {
 	}
 	public String getName() {
 		return "Zombie";
+	}
+	public Circle drawZombie() {
+		Circle zombie = new Circle();
+		zombie.setFill(Color.GREEN);
+		zombie.setStroke(Color.GREEN);
+		return zombie;
 	}
 }
 	
@@ -46,6 +61,12 @@ class Tank extends Enemy {
 	public String getName() {
 		return "Tank";
 	}
+	public Circle drawTank() {
+		Circle tank = new Circle();
+		tank.setFill(Color.YELLOW);
+		tank.setStroke(Color.YELLOW);
+		return tank;
+	}
 }
 class Boss extends Enemy {
 	Boss() {
@@ -58,5 +79,11 @@ class Boss extends Enemy {
 	}
 	public String getName() {
 		return "Boss";
+	}
+	public Circle drawBoss() {
+		Circle boss = new Circle();
+		boss.setFill(Color.RED);
+		boss.setStroke(Color.RED);
+		return boss;
 	}
 }
