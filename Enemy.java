@@ -21,8 +21,10 @@ class Skeleton extends Enemy {
 	public String getName() {
 		return "Skeleton";
 	}
-	public Circle drawSkeleton() {
-		Circle skeleton = new Circle();
+	public Circle draw(int x, int y) {
+		setXValue(x);
+		setYValue(y);
+		Circle skeleton = new Circle(x, y, 20);
 		skeleton.setFill(Color.WHITE);
 		skeleton.setStroke(Color.BLACK);
 		return skeleton;
@@ -41,8 +43,10 @@ class Zombie extends Enemy {
 	public String getName() {
 		return "Zombie";
 	}
-	public Circle drawZombie() {
-		Circle zombie = new Circle();
+	public Circle draw(int x, int y) {
+		setXValue(x);
+		setYValue(y);
+		Circle zombie = new Circle(x, y, 20);
 		zombie.setFill(Color.GREEN);
 		zombie.setStroke(Color.GREEN);
 		return zombie;
@@ -61,8 +65,10 @@ class Tank extends Enemy {
 	public String getName() {
 		return "Tank";
 	}
-	public Circle drawTank() {
-		Circle tank = new Circle();
+	public Circle draw(int x, int y) {
+		setXValue(x);
+		setYValue(y);
+		Circle tank = new Circle(x, y, 30);
 		tank.setFill(Color.YELLOW);
 		tank.setStroke(Color.YELLOW);
 		return tank;
@@ -80,8 +86,10 @@ class Boss extends Enemy {
 	public String getName() {
 		return "Boss";
 	}
-	public Circle drawBoss() {
-		Circle boss = new Circle();
+	public Circle draw(int x, int y) {
+		setXValue(x);
+		setYValue(y);
+		Circle boss = new Circle(x, y, 30);
 		boss.setFill(Color.RED);
 		boss.setStroke(Color.RED);
 		return boss;
