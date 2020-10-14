@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -28,6 +29,8 @@ public class Display_Game extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Player player1 = new Player();
+		player1.setXValue(100);
+		player1.setYValue(250);
 		GridPane spawnPlayerPane = new GridPane();
 		GridPane spawnEnemiesPane = new GridPane();
 		BorderPane campPane = new BorderPane();
@@ -53,6 +56,7 @@ public class Display_Game extends Application {
 		Button plusDamage = new Button("+");
 		Button plusAttackBonus = new Button("+");
 		Button plusEndurance = new Button("+");
+		spawnPlayerPane.setAlignment(Pos.CENTER);
 		spawnPlayerPane.addColumn(0, pointsLeft, armor, damage, attackBonus, endurance);
 		spawnPlayerPane.addColumn(1, points, plusArmor, plusDamage, plusAttackBonus, plusEndurance);
 		
@@ -113,7 +117,7 @@ public class Display_Game extends Application {
 		
 		//Spawn Enemies events
 		
-		ArrayList<Character> enemies = new ArrayList<Character>();
+		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 		spawn.setOnAction(e -> {
 		primaryStage.setScene(combat);
 		int numOfSkeletons =	Integer.parseInt(skeletonNum.getText());
@@ -135,7 +139,12 @@ public class Display_Game extends Application {
 		
 		for (int i = 0; i < enemies.size(); i++) {
 			enemies.get(i).draw(500, i * 50);
-			combatPane.getChildren().add(enemies.get(i).draw(500, (500 / enemies.size()) + i * 50));
+			if (enemies.size() > 1) {
+			combatPane.getChildren().add(enemies.get(i).draw(500, (400 / enemies.size()) + i * 50));
+		}
+			else {
+				combatPane.getChildren().add(enemies.get(i).draw(500, 250));
+			}
 		}
 		});
 
@@ -210,7 +219,7 @@ public class Display_Game extends Application {
 		
 		
 		//Combat
-		combatPane.getChildren().add(player1.draw(100, 250));
+		combatPane.getChildren().add(player1.draw(player1.getXValue(), player1.getYValue()));
 		TextField targetSelect = new TextField("0"); 
 		Label target = new Label("Target");
 		Button btTarget = new Button("Attack");
@@ -222,27 +231,54 @@ public class Display_Game extends Application {
 		
 		//Combat events
 		EventHandler<ActionEvent> movePlayerRight = e -> {
-			player1.setXValue(player1.getXValue() + 50);
+			player1.moveRight();
+			combatPane.getChildren().add(player1.draw(player1.getXValue(), player1.getYValue()));
 		};
 		EventHandler<ActionEvent> movePlayerLeft = e -> {
-			player1.setXValue(player1.getXValue() - 50);
+			player1.moveLeft();
 		};
 		EventHandler<ActionEvent> moveEnemyRight = e -> {
 			enemies.get(0).setXValue(player1.getXValue() + 50);
 		};
 		EventHandler<ActionEvent> moveEnemyLeft = e -> {
-			player1.setXValue(player1.getXValue() - 50);
+			
 		};
 		btTarget.setOnAction(e -> {
-			Timeline animation = new Timeline(new KeyFrame(Duration.millis(500), movePlayerRight), new KeyFrame(Duration.millis(500), movePlayerLeft)
-					);
+			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()));
 		});
 		
 		primaryStage.setTitle("Spawn");
 		primaryStage.setScene(spawnPlayer);
 		primaryStage.show();
-		primaryStage.setResizable(false);
-		
+		primaryStage.setResizable(false);		
+	}
+	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target) {
+		EventHandler<ActionEvent> movePlayerRight = e -> {
+	//		player1.moveRight();z
+			KeyValue xValue = new KeyValue(player1);
+			System.out.println("move");
+		};
+		EventHandler<ActionEvent> movePlayerLeft = e -> {
+			player1.moveLeft();
+		};	
+		player1.doDamage(enemies.get(target));
+			Timeline playerAttack = new Timeline(new KeyFrame(Duration.millis(500), movePlayerRight));
+			playerAttack.play();
+			for (int z = 0; z < enemies.size(); z++) {
+				if (enemies.get(z).getHp() <= 0) {
+					System.out.print("yes");
+					player1.setExp(player1.getExp() + enemies.get(z).getExp());
+					player1.setGold(player1.getGold() + enemies.get(z).getGold());
+					enemies.remove(z);
+					z--;
+				}
+			}
+			for (int x = 0; x < enemies.size(); x++) {
+				enemies.get(x).doDamage(player1);
+				if (player1.getHp() < 0) {
+				player1.setHp(0);
+				}
+		}
 	}
 	public String countDown(String currentNum) {
 		int intValue = Integer.parseInt(currentNum);
