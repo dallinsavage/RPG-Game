@@ -24,6 +24,14 @@ public abstract class Character {
 		damage = newDamage;
 		attackBonus = newAttackBonus;
 	}
+	public void moveLeft() {
+		xValue = xValue - 50;
+		draw(xValue, yValue);
+	}
+	public void moveRight() {
+		xValue = xValue + 50;
+		draw(xValue, yValue);
+	}
 	public int getXValue() {
 		return xValue;
 	}
