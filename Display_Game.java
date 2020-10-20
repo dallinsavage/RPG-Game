@@ -20,6 +20,14 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Display_Game extends Application {
+	private int currentEnemy = 0;
+	
+	public int getCurrentEnemy() {
+		return currentEnemy;
+	}
+	public void setCurrentEnemy(int newEnemy) {
+		currentEnemy = newEnemy;
+	}
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -29,8 +37,8 @@ public class Display_Game extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Player player1 = new Player();
-		player1.setXValue(100);
-		player1.setYValue(250);
+		player1.setX(100);
+		player1.setY(250);
 		GridPane spawnPlayerPane = new GridPane();
 		GridPane spawnEnemiesPane = new GridPane();
 		BorderPane campPane = new BorderPane();
@@ -138,11 +146,14 @@ public class Display_Game extends Application {
 		}
 		
 		for (int i = 0; i < enemies.size(); i++) {
-			enemies.get(i).draw(500, i * 50);
 			if (enemies.size() > 1) {
-			combatPane.getChildren().add(enemies.get(i).draw(500, (400 / enemies.size()) + i * 50));
+				enemies.get(i).setX(500);
+				enemies.get(i).setY(400 / enemies.size() + i * 50);
+			combatPane.getChildren().add(enemies.get(i).draw(enemies.get(i).getX(), enemies.get(i).getY()));
 		}
 			else {
+				enemies.get(i).setX(500);
+				enemies.get(i).setY(250);
 				combatPane.getChildren().add(enemies.get(i).draw(500, 250));
 			}
 		}
@@ -219,7 +230,7 @@ public class Display_Game extends Application {
 		
 		
 		//Combat
-		combatPane.getChildren().add(player1.draw(player1.getXValue(), player1.getYValue()));
+		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
 		TextField targetSelect = new TextField("0"); 
 		Label target = new Label("Target");
 		Button btTarget = new Button("Attack");
@@ -230,21 +241,10 @@ public class Display_Game extends Application {
 		
 		
 		//Combat events
-		EventHandler<ActionEvent> movePlayerRight = e -> {
-			player1.moveRight();
-			combatPane.getChildren().add(player1.draw(player1.getXValue(), player1.getYValue()));
-		};
-		EventHandler<ActionEvent> movePlayerLeft = e -> {
-			player1.moveLeft();
-		};
-		EventHandler<ActionEvent> moveEnemyRight = e -> {
-			enemies.get(0).setXValue(player1.getXValue() + 50);
-		};
-		EventHandler<ActionEvent> moveEnemyLeft = e -> {
-			
-		};
+		
+		
 		btTarget.setOnAction(e -> {
-			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()));
+			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane);
 		});
 		
 		primaryStage.setTitle("Spawn");
@@ -252,34 +252,46 @@ public class Display_Game extends Application {
 		primaryStage.show();
 		primaryStage.setResizable(false);		
 	}
-	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target) {
+	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target, Pane pane) {
 		EventHandler<ActionEvent> movePlayerRight = e -> {
-	//		player1.moveRight();z
-			KeyValue xValue = new KeyValue(player1);
-			System.out.println("move");
+			player1.moveRight();
+			drawPane(player1, enemies, pane);
 		};
 		EventHandler<ActionEvent> movePlayerLeft = e -> {
 			player1.moveLeft();
-		};	
+			drawPane(player1, enemies, pane);
+		};
+		EventHandler<ActionEvent> moveEnemyRight = e -> {
+			for (int x = 0; x < enemies.size(); x++) {
+				enemies.get(x).moveRight();
+			}
+			drawPane(player1, enemies, pane);
+			System.out.println("move right");
+			System.out.println(getCurrentEnemy());
+		};
+		EventHandler<ActionEvent> moveEnemyLeft = e -> {
+			for (int x = 0; x < enemies.size(); x++) {
+				enemies.get(x).doDamage(player1);
+				enemies.get(x).moveLeft();
+				if (player1.getHp() < 0) {
+				player1.setHp(0);
+				}
+		}
+			drawPane(player1, enemies, pane);
+			System.out.println("move left");
+		};
 		player1.doDamage(enemies.get(target));
-			Timeline playerAttack = new Timeline(new KeyFrame(Duration.millis(500), movePlayerRight));
-			playerAttack.play();
+			Timeline Attack = new Timeline(new KeyFrame(Duration.millis(50), movePlayerRight), new KeyFrame(Duration.millis(300), movePlayerLeft), new KeyFrame(Duration.millis(50), moveEnemyLeft), new KeyFrame(Duration.millis(300), moveEnemyRight));
+			Attack.play();
 			for (int z = 0; z < enemies.size(); z++) {
 				if (enemies.get(z).getHp() <= 0) {
-					System.out.print("yes");
 					player1.setExp(player1.getExp() + enemies.get(z).getExp());
 					player1.setGold(player1.getGold() + enemies.get(z).getGold());
 					enemies.remove(z);
 					z--;
 				}
 			}
-			for (int x = 0; x < enemies.size(); x++) {
-				enemies.get(x).doDamage(player1);
-				if (player1.getHp() < 0) {
-				player1.setHp(0);
-				}
 		}
-	}
 	public String countDown(String currentNum) {
 		int intValue = Integer.parseInt(currentNum);
 		intValue = intValue - 1;
@@ -292,5 +304,18 @@ public class Display_Game extends Application {
 		String newNum = String.valueOf(intValue);
 		return newNum;
 	}
-
+	public void drawPane(Player player1, ArrayList<Enemy> enemies, Pane pane) {
+		pane.getChildren().clear();
+		pane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
+		for (int i = 0; i < enemies.size(); i++) {
+			pane.getChildren().add(enemies.get(i).draw(enemies.get(i).getX(), enemies.get(i).getY()));
+		}
+		TextField targetSelect = new TextField("0"); 
+		Label target = new Label("Target");
+		Button btTarget = new Button("Attack");
+		HBox targeting = new HBox(20);
+		targeting.getChildren().addAll(target, targetSelect, btTarget);
+		pane.getChildren().add(targeting);
+		targeting.setAlignment(Pos.BOTTOM_CENTER);
+	}
 }
