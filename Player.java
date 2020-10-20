@@ -1,4 +1,3 @@
-  
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -23,8 +22,8 @@ public class Player extends Character {
 		System.out.println("You feel well rested, Hp restored");
 	}
 	public Circle draw(int x, int y) {
-		setXValue(x);
-		setYValue(y);
+		setX(x);
+		setY(y);
 		Circle player = new Circle(x, y, 20);
 		player.setFill(Color.BLUE);
 		player.setStroke(Color.BLUE);
