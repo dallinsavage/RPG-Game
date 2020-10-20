@@ -3,8 +3,8 @@ import java.util.Scanner;
 import javafx.scene.shape.Circle;
 
 public abstract class Character {
-	private int xValue;
-	private int yValue;
+	private int x;
+	private int y;
 	private int level = 1;
 	private int exp;
 	private int hp;
@@ -25,24 +25,22 @@ public abstract class Character {
 		attackBonus = newAttackBonus;
 	}
 	public void moveLeft() {
-		xValue = xValue - 50;
-		draw(xValue, yValue);
+		x = x - 25;
 	}
 	public void moveRight() {
-		xValue = xValue + 50;
-		draw(xValue, yValue);
+		x = x + 25;
 	}
-	public int getXValue() {
-		return xValue;
+	public int getX() {
+		return x;
 	}
-	public void setXValue(int newX) {
-		xValue = newX;
+	public void setX(int newX) {
+		x = newX;
 	}
-	public void setYValue(int newY) {
-		yValue = newY;
+	public void setY(int newY) {
+		y = newY;
 	}
-	public int getYValue() {
-		return yValue;
+	public int getY() {
+		return y;
 	}
 	public void setHp(int newHp) {
 		hp = newHp;
