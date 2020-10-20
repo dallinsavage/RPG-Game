@@ -2,12 +2,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public abstract class Enemy extends Character {
+	
 	Enemy() {
 	}
 	Enemy(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
 		super(newEndurance, newArmor, newDamage, newAttackBonus);
 	}
 }
+
 
 class Skeleton extends Enemy {
 	Skeleton() {
@@ -22,8 +24,8 @@ class Skeleton extends Enemy {
 		return "Skeleton";
 	}
 	public Circle draw(int x, int y) {
-		setXValue(x);
-		setYValue(y);
+		setX(x);
+		setY(y);
 		Circle skeleton = new Circle(x, y, 20);
 		skeleton.setFill(Color.WHITE);
 		skeleton.setStroke(Color.BLACK);
@@ -44,8 +46,8 @@ class Zombie extends Enemy {
 		return "Zombie";
 	}
 	public Circle draw(int x, int y) {
-		setXValue(x);
-		setYValue(y);
+		setX(x);
+		setY(y);
 		Circle zombie = new Circle(x, y, 20);
 		zombie.setFill(Color.GREEN);
 		zombie.setStroke(Color.GREEN);
@@ -66,8 +68,8 @@ class Tank extends Enemy {
 		return "Tank";
 	}
 	public Circle draw(int x, int y) {
-		setXValue(x);
-		setYValue(y);
+		setX(x);
+		setY(y);
 		Circle tank = new Circle(x, y, 30);
 		tank.setFill(Color.YELLOW);
 		tank.setStroke(Color.YELLOW);
@@ -87,8 +89,8 @@ class Boss extends Enemy {
 		return "Boss";
 	}
 	public Circle draw(int x, int y) {
-		setXValue(x);
-		setYValue(y);
+		setX(x);
+		setY(y);
 		Circle boss = new Circle(x, y, 30);
 		boss.setFill(Color.RED);
 		boss.setStroke(Color.RED);
