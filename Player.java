@@ -1,4 +1,7 @@
-  public class Player extends Character {
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+
+public class Player extends Character {
 	Player() {
 		setExp(0);
 		setGold(0);
@@ -16,6 +19,13 @@
 	}
 	public void rest() {
 		setHp(getMaxHp());
-		System.out.println("You feel well rested, Hp restored");
+	}
+	public Circle draw(int x, int y) {
+		setX(x);
+		setY(y);
+		Circle player = new Circle(x, y, 20);
+		player.setFill(Color.BLUE);
+		player.setStroke(Color.BLUE);
+		return player;
 	}
 }

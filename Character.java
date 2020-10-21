@@ -1,6 +1,10 @@
 import java.util.Scanner;
 
+import javafx.scene.shape.Circle;
+
 public abstract class Character {
+	private int x;
+	private int y;
 	private int level = 1;
 	private int exp;
 	private int hp;
@@ -9,7 +13,7 @@ public abstract class Character {
 	private int damage;
 	private int attackBonus;
 	private int endurance;
-	private int gold;
+	private static int gold;
 	Character() {
 	}
 	Character(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
@@ -19,6 +23,24 @@ public abstract class Character {
 		armor = newArmor;
 		damage = newDamage;
 		attackBonus = newAttackBonus;
+	}
+	public void moveLeft() {
+		x = x - 25;
+	}
+	public void moveRight() {
+		x = x + 25;
+	}
+	public int getX() {
+		return x;
+	}
+	public void setX(int newX) {
+		x = newX;
+	}
+	public void setY(int newY) {
+		y = newY;
+	}
+	public int getY() {
+		return y;
 	}
 	public void setHp(int newHp) {
 		hp = newHp;
@@ -108,12 +130,9 @@ public abstract class Character {
 		int targetArmor = target.getArmor();
 		if (attack + attackBonus > targetArmor) {
 			target.setHp(targetHp - damage);
-			System.out.println(getName() + (" hit ") + target.getName() + " for " + damage + " damage");
-		}
-		else {
-			System.out.println(getName() + " missed " + target.getName());
 		}
 	}
 	public abstract String getName();
 	public abstract String stringHp();
+	public abstract Circle draw(int x, int y);
 }
