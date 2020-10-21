@@ -130,10 +130,6 @@ public abstract class Character {
 		int targetArmor = target.getArmor();
 		if (attack + attackBonus > targetArmor) {
 			target.setHp(targetHp - damage);
-			System.out.println(getName() + (" hit ") + target.getName() + " for " + damage + " damage");
-		}
-		else {
-			System.out.println(getName() + " missed " + target.getName());
 		}
 	}
 	public abstract String getName();
