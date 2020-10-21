@@ -19,7 +19,6 @@ public class Player extends Character {
 	}
 	public void rest() {
 		setHp(getMaxHp());
-		System.out.println("You feel well rested, Hp restored");
 	}
 	public Circle draw(int x, int y) {
 		setX(x);
