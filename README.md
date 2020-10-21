@@ -3,7 +3,7 @@ This game spawns a character that you can customize with different stats. After 
 ## <h2> Motivation
 What motivated me to make this game was that i have always had a passion for games and wanted to make one that i had control over. To be able to make a game exatly the way i want it.
 ## <h2> Program being run
-![Game being run](https://github.com/dallinsavage/RPG-Game/blob/master/Screen%20Shot%202020-09-03%20at%203.33.05%20PM.png)
+![Game being run](https://github.com/dallinsavage/RPG-Game/blob/With_GUI/Screen%20Shot%202020-10-21%20at%204.41.39%20PM.png)
 ## <h2> Code example
   ```
   		public void doDamage(Character target) {
