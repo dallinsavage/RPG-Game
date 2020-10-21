@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -15,30 +14,24 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Display_Game extends Application {
-	private int currentEnemy = 0;
-	
-	public int getCurrentEnemy() {
-		return currentEnemy;
-	}
-	public void setCurrentEnemy(int newEnemy) {
-		currentEnemy = newEnemy;
-	}
+
 	
 	public static void main(String[] args) {
 		launch(args);
 
 	}
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Player player1 = new Player();
 		player1.setX(100);
 		player1.setY(250);
+		BorderPane endPane = new BorderPane();
 		GridPane spawnPlayerPane = new GridPane();
 		GridPane spawnEnemiesPane = new GridPane();
 		BorderPane campPane = new BorderPane();
@@ -49,12 +42,20 @@ public class Display_Game extends Application {
 		Scene camp = new Scene(campPane, 750, 500);
 		Scene combat = new Scene(combatPane, 750, 500);
 		Scene shop = new Scene(shopPane, 750, 500);
+		Scene end = new Scene(endPane,750, 500);
 		
+		// end pane
+		
+		Label die = new Label("You died");
+		die.setScaleX(10);
+		die.setScaleY(10);
+		endPane.setCenter(die);
+
 		
 		//Spawn Player
 
 		Label pointsLeft = new Label("Points left");
-		TextField points = new TextField("2");
+		TextField points = new TextField("25");
 		points.setEditable(false);
 		Label armor = new Label("Armor");
 		Label damage = new Label("Damage");
@@ -101,6 +102,7 @@ public class Display_Game extends Application {
 		plusEndurance.setOnAction(e -> {
 			if (!points.getText().equals("1")) {
 			player1.increaseEndurance(1);
+			player1.setHp(player1.getMaxHp());
 			points.setText(countDown(points.getText()));
 			}
 			else {
@@ -128,6 +130,9 @@ public class Display_Game extends Application {
 		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 		spawn.setOnAction(e -> {
 		primaryStage.setScene(combat);
+		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
+		health.setFill(Color.RED);
+		combatPane.getChildren().add(health);
 		int numOfSkeletons =	Integer.parseInt(skeletonNum.getText());
 		int numOfZombies =	Integer.parseInt(zombieNum.getText());
 		int numOfTanks =	Integer.parseInt(tankNum.getText());
@@ -231,6 +236,9 @@ public class Display_Game extends Application {
 		
 		//Combat
 		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
+		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
+		health.setFill(Color.RED);
+		combatPane.getChildren().add(health);
 		TextField targetSelect = new TextField("0"); 
 		Label target = new Label("Target");
 		Button btTarget = new Button("Attack");
@@ -244,7 +252,7 @@ public class Display_Game extends Application {
 		
 		
 		btTarget.setOnAction(e -> {
-			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane);
+			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, end, camp, primaryStage);
 		});
 		
 		primaryStage.setTitle("Spawn");
@@ -252,33 +260,31 @@ public class Display_Game extends Application {
 		primaryStage.show();
 		primaryStage.setResizable(false);		
 	}
-	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target, Pane pane) {
+	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target, Pane combatPane, Scene end, Scene camp, Stage primaryStage) {
 		EventHandler<ActionEvent> movePlayerRight = e -> {
 			player1.moveRight();
-			drawPane(player1, enemies, pane);
+			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
 		};
 		EventHandler<ActionEvent> movePlayerLeft = e -> {
 			player1.moveLeft();
-			drawPane(player1, enemies, pane);
+			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
 		};
 		EventHandler<ActionEvent> moveEnemyRight = e -> {
 			for (int x = 0; x < enemies.size(); x++) {
 				enemies.get(x).moveRight();
 			}
-			drawPane(player1, enemies, pane);
-			System.out.println("move right");
-			System.out.println(getCurrentEnemy());
+			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
 		};
 		EventHandler<ActionEvent> moveEnemyLeft = e -> {
 			for (int x = 0; x < enemies.size(); x++) {
 				enemies.get(x).doDamage(player1);
 				enemies.get(x).moveLeft();
-				if (player1.getHp() < 0) {
+				if (player1.getHp() <= 0) {
 				player1.setHp(0);
+				primaryStage.setScene(end);
 				}
 		}
-			drawPane(player1, enemies, pane);
-			System.out.println("move left");
+			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
 		};
 		player1.doDamage(enemies.get(target));
 			Timeline Attack = new Timeline(new KeyFrame(Duration.millis(50), movePlayerRight), new KeyFrame(Duration.millis(300), movePlayerLeft), new KeyFrame(Duration.millis(50), moveEnemyLeft), new KeyFrame(Duration.millis(300), moveEnemyRight));
@@ -290,6 +296,9 @@ public class Display_Game extends Application {
 					enemies.remove(z);
 					z--;
 				}
+			}
+			if (enemies.isEmpty()) {
+				primaryStage.setScene(camp);
 			}
 		}
 	public String countDown(String currentNum) {
@@ -304,18 +313,24 @@ public class Display_Game extends Application {
 		String newNum = String.valueOf(intValue);
 		return newNum;
 	}
-	public void drawPane(Player player1, ArrayList<Enemy> enemies, Pane pane) {
-		pane.getChildren().clear();
-		pane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
+	public void drawPane(Player player1, ArrayList<Enemy> enemies, Pane combatPane, Scene end, Scene camp, Stage primaryStage) {
+		combatPane.getChildren().clear();
+		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
+		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
+		health.setFill(Color.RED);
+		combatPane.getChildren().add(health);
 		for (int i = 0; i < enemies.size(); i++) {
-			pane.getChildren().add(enemies.get(i).draw(enemies.get(i).getX(), enemies.get(i).getY()));
+			combatPane.getChildren().add(enemies.get(i).draw(enemies.get(i).getX(), enemies.get(i).getY()));
 		}
 		TextField targetSelect = new TextField("0"); 
 		Label target = new Label("Target");
 		Button btTarget = new Button("Attack");
 		HBox targeting = new HBox(20);
 		targeting.getChildren().addAll(target, targetSelect, btTarget);
-		pane.getChildren().add(targeting);
+		combatPane.getChildren().add(targeting);
 		targeting.setAlignment(Pos.BOTTOM_CENTER);
+		btTarget.setOnAction(e -> {
+			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, end, camp, primaryStage);
+		});
 	}
 }
