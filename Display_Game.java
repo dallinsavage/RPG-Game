@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 
 import javafx.animation.KeyFrame;
@@ -10,11 +11,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -37,6 +41,9 @@ public class Display_Game extends Application {
 		BorderPane campPane = new BorderPane();
 		Pane combatPane = new Pane();
 		GridPane shopPane = new GridPane();
+		shopPane.setStyle("-fx-background-color:rgb(135,206,235); -fx-opacity:1;");
+		spawnPlayerPane.setStyle("-fx-background-color:rgb(135,206,235); -fx-opacity:1;");
+		spawnEnemiesPane.setStyle("-fx-background-color:rgb(135,206,235); -fx-opacity:1;");
 		Scene spawnEnemies = new Scene(spawnEnemiesPane, 750, 500);
 		Scene spawnPlayer = new Scene(spawnPlayerPane, 750, 500);
 		Scene camp = new Scene(campPane, 750, 500);
@@ -55,7 +62,7 @@ public class Display_Game extends Application {
 		//Spawn Player
 
 		Label pointsLeft = new Label("Points left");
-		TextField points = new TextField("25");
+		TextField points = new TextField("1");
 		points.setEditable(false);
 		Label armor = new Label("Armor");
 		Label damage = new Label("Damage");
@@ -170,9 +177,34 @@ public class Display_Game extends Application {
 		Button btRest = new Button("Rest");
 		Button btShop = new Button("Shop");
 		Button btCombat = new Button("Continue Adventure");
-		HBox campHBox = new HBox(200);
+		HBox campHBox = new HBox(230);
+		Rectangle rec1 = new Rectangle(350, 320, 25, 75);
+		Rectangle rec2 = new Rectangle(330, 300, 25, 100);
+		Rectangle rec3 = new Rectangle(370, 300, 25, 100);
+		rec1.setFill(Color.BROWN);
+		rec2.setFill(Color.BROWN);
+		rec3.setFill(Color.BROWN);
+		rec2.setRotate(45);
+		rec3.setRotate(-45);
+		Rectangle sky = new Rectangle(0, 0, 750, 300);
+		sky.setFill(Color.SKYBLUE);
+		Rectangle ground = new Rectangle(0, 300, 750, 200);
+		ground.setFill(Color.DARKGREEN);
+		Rectangle path = new Rectangle(680, 280, 75, 250);
+		Circle pathCircle = new Circle(642, 480, 40);
+		pathCircle.setFill(Color.TAN);
+		path.setRotate(45);
+		path.setFill(Color.TAN);
+		Polygon tent = new Polygon(0, 400, 100, 50, 200, 400);
+		Polygon tent1 = new Polygon(100, 400, 100, 50, 140, 400);
+		Polygon fire1 = new Polygon(330, 350, 300, 270, 340, 320, 360, 270, 380, 320, 420, 270, 400, 350);
+		Polygon fire2 = new Polygon(330, 350, 305, 280, 340, 330, 360, 280, 380, 330, 415, 280, 400, 350);
+		fire2.setFill(Color.YELLOW);
+		fire1.setFill(Color.ORANGE);
+		tent.setFill(Color.DARKOLIVEGREEN);
 		campHBox.setAlignment(Pos.CENTER);
 		campHBox.getChildren().addAll(btRest, btShop, btCombat);
+		campPane.getChildren().addAll(sky, ground, rec1, rec2, rec3, fire1, fire2, tent, tent1, path, pathCircle);
 		campPane.setCenter(campHBox);
 		
 		//Camp events
@@ -235,6 +267,10 @@ public class Display_Game extends Application {
 		
 		
 		//Combat
+		
+		Rectangle floor = new Rectangle(0, 0, 750, 500);
+		floor.setFill(Color.DARKGREEN);
+		combatPane.getChildren().add(floor);
 		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
 		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
 		health.setFill(Color.RED);
@@ -332,5 +368,8 @@ public class Display_Game extends Application {
 		btTarget.setOnAction(e -> {
 			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, end, camp, primaryStage);
 		});
+	}
+	public void message(Pane pane) {
+		Thread message = new Thread();
 	}
 }
