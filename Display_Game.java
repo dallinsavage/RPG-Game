@@ -1,6 +1,5 @@
-
 import java.util.ArrayList;
-
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -11,11 +10,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
@@ -35,7 +34,7 @@ public class Display_Game extends Application {
 		Player player1 = new Player();
 		player1.setX(100);
 		player1.setY(250);
-		BorderPane endPane = new BorderPane();
+		StackPane endPane = new StackPane();
 		GridPane spawnPlayerPane = new GridPane();
 		GridPane spawnEnemiesPane = new GridPane();
 		BorderPane campPane = new BorderPane();
@@ -54,15 +53,17 @@ public class Display_Game extends Application {
 		// end pane
 		
 		Label die = new Label("You died");
+		die.setTextFill(Color.DARKRED);
+		Rectangle background = new Rectangle(0,0, 750, 500);
 		die.setScaleX(10);
 		die.setScaleY(10);
-		endPane.setCenter(die);
+		endPane.getChildren().addAll(background, die);
 
 		
 		//Spawn Player
 
 		Label pointsLeft = new Label("Points left");
-		TextField points = new TextField("1");
+		TextField points = new TextField("20");
 		points.setEditable(false);
 		Label armor = new Label("Armor");
 		Label damage = new Label("Damage");
@@ -196,7 +197,7 @@ public class Display_Game extends Application {
 		path.setRotate(45);
 		path.setFill(Color.TAN);
 		Polygon tent = new Polygon(0, 400, 100, 50, 200, 400);
-		Polygon tent1 = new Polygon(100, 400, 100, 50, 140, 400);
+		Polygon tent1 = new Polygon(100, 400, 100, 70, 140, 400);
 		Polygon fire1 = new Polygon(330, 350, 300, 270, 340, 320, 360, 270, 380, 320, 420, 270, 400, 350);
 		Polygon fire2 = new Polygon(330, 350, 305, 280, 340, 330, 360, 280, 380, 330, 415, 280, 400, 350);
 		fire2.setFill(Color.YELLOW);
@@ -211,6 +212,14 @@ public class Display_Game extends Application {
 		
 		btRest.setOnAction(e -> {
 			player1.rest();
+			Label label = new Label("You Feel rested, HP restored");
+			Pane pane = new Pane(label);
+			label.setTextFill(Color.BLUE);
+			campPane.setBottom(pane);
+			FadeTransition ft = new FadeTransition(Duration.seconds(3.0), label);
+			ft.setFromValue(1.0);
+			ft.setToValue(0);
+			ft.play();
 		});
 		btShop.setOnAction(e -> {
 			primaryStage.setScene(shop);
@@ -232,7 +241,6 @@ public class Display_Game extends Application {
 		Button back = new Button("Back");
 		shopPane.addColumn(0, btEndurance, btArmor);
 		shopPane.addColumn(1, btStrength, btAttack, back);
-
 		shopPane.setAlignment(Pos.CENTER);
 		shopPane.setHgap(50);
 		shopPane.setVgap(50);
@@ -240,24 +248,100 @@ public class Display_Game extends Application {
 		//Shop events
 		
 		btEndurance.setOnAction(e -> {
+			Label label = new Label();
+			Pane pane = new Pane(label);
+			label.setTextFill(Color.BLUE);
+			shopPane.add(pane, 0, 2);
+			FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
+			ft.setFromValue(1.0);
+			ft.setToValue(0);
 			if (player1.getGold() >= 50) {
+				player1.setGold(player1.getGold() - 50);
 				player1.increaseEndurance(1);
+				label.setText("Purchase successful");
 			}
+			else {
+				label.setText("Not enough gold");
+			}
+			ft.play();
+			ft.setOnFinished(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					shopPane.getChildren().remove(pane);
+				}
+			});
 		});
 		btArmor.setOnAction(e -> {
+			Label label = new Label();
+			Pane pane = new Pane(label);
+			label.setTextFill(Color.BLUE);
+			shopPane.add(pane, 0, 2);
+			FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
+			ft.setFromValue(1.0);
+			ft.setToValue(0.1);
 			if (player1.getGold() >= 100) {
+				player1.setGold(player1.getGold() - 100);
 				player1.increaseArmor(1);
+				label.setText("Purchase successful");
 			}
+			else {
+				label.setText("Not enough gold");
+			}
+			ft.play();
+			ft.setOnFinished(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					shopPane.getChildren().remove(pane);
+				}
+			});
 		});
 		btStrength.setOnAction(e -> {
+			Label label = new Label();
+			Pane pane = new Pane(label);
+			label.setTextFill(Color.BLUE);
+			shopPane.add(pane, 0, 2);
+			FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
+			ft.setFromValue(1.0);
+			ft.setToValue(0.1);
 			if (player1.getGold() >= 50) {
+				player1.setGold(player1.getGold() - 50);
 				player1.increaseDamage(1);
+				label.setText("Purchase successful");
 			}
+			else {
+				label.setText("Not enough gold");
+			}
+			ft.play();
+			ft.setOnFinished(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					shopPane.getChildren().remove(pane);
+				}
+			});
 		});
 		btAttack.setOnAction(e -> {
+			Label label = new Label();
+			Pane pane = new Pane(label);
+			label.setTextFill(Color.BLUE);
+			shopPane.add(pane, 0, 2);
+			FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
+			ft.setFromValue(1.0);
+			ft.setToValue(0.1);
 			if (player1.getGold() >= 100) {
+				player1.setGold(player1.getGold() - 100);
 				player1.increaseAttackBonus(1);
+				label.setText("Purchase successful");
 			}
+			else {
+				label.setText("Not enough gold");
+			}
+			ft.play();
+			ft.setOnFinished(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					shopPane.getChildren().remove(pane);
+				}
+			});
 		});
 		back.setOnAction(e -> {
 			primaryStage.setScene(camp);
@@ -351,6 +435,9 @@ public class Display_Game extends Application {
 	}
 	public void drawPane(Player player1, ArrayList<Enemy> enemies, Pane combatPane, Scene end, Scene camp, Stage primaryStage) {
 		combatPane.getChildren().clear();
+		Rectangle floor = new Rectangle(0, 0, 750, 500);
+		floor.setFill(Color.DARKGREEN);
+		combatPane.getChildren().add(floor);
 		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
 		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
 		health.setFill(Color.RED);
@@ -368,8 +455,5 @@ public class Display_Game extends Application {
 		btTarget.setOnAction(e -> {
 			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, end, camp, primaryStage);
 		});
-	}
-	public void message(Pane pane) {
-		Thread message = new Thread();
 	}
 }
