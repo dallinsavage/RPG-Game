@@ -9,10 +9,10 @@ public abstract class Character {
 	private int exp;
 	private int hp;
 	private int maxHp;
-	private int armor;
-	private int damage;
-	private int attackBonus;
-	private int endurance;
+	private int armor = 1;
+	private int damage = 1;
+	private int attackBonus = 1;
+	private int endurance = 1;
 	private static int gold;
 	Character() {
 	}
