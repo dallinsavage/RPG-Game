@@ -1,5 +1,9 @@
+import javafx.animation.PathTransition;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.util.Duration;
 
 public abstract class Enemy extends Character {
 	
@@ -7,6 +11,16 @@ public abstract class Enemy extends Character {
 	}
 	Enemy(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
 		super(newEndurance, newArmor, newDamage, newAttackBonus);
+	}
+	public void animate(Pane pane) {
+		PathTransition pt = new PathTransition();
+		pt.setPath(new Line(this.getX(), this.getY(), this.getX() - 50, this.getY()));
+		pt.setAutoReverse(true);
+		pt.setCycleCount(2);
+		pt.setDuration(Duration.millis(500));
+		int index = pane.getChildren().indexOf(this);
+		pt.setNode(pane.getChildren().get(index));
+		pt.play();
 	}
 }
 
