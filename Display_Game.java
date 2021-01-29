@@ -63,7 +63,7 @@ public class Display_Game extends Application {
 		//Spawn Player
 
 		Label pointsLeft = new Label("Points left");
-		TextField points = new TextField("20");
+		TextField points = new TextField("1");
 		points.setEditable(false);
 		Label armor = new Label("Armor");
 		Label damage = new Label("Damage");
@@ -117,6 +117,7 @@ public class Display_Game extends Application {
 				primaryStage.setScene(camp);
 			}
 		});
+		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
 
 		//Spawn Enemies
 		
@@ -381,40 +382,18 @@ public class Display_Game extends Application {
 		primaryStage.setResizable(false);		
 	}
 	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target, Pane combatPane, Scene end, Scene camp, Stage primaryStage) {
-		EventHandler<ActionEvent> movePlayerRight = e -> {
-			player1.moveRight();
-			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
-		};
-		EventHandler<ActionEvent> movePlayerLeft = e -> {
-			player1.moveLeft();
-			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
-		};
-		EventHandler<ActionEvent> moveEnemyRight = e -> {
-			for (int x = 0; x < enemies.size(); x++) {
-				enemies.get(x).moveRight();
-			}
-			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
-		};
-		EventHandler<ActionEvent> moveEnemyLeft = e -> {
-			for (int x = 0; x < enemies.size(); x++) {
-				enemies.get(x).doDamage(player1);
-				enemies.get(x).moveLeft();
-				if (player1.getHp() <= 0) {
-				player1.setHp(0);
-				primaryStage.setScene(end);
-				}
-		}
-			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
-		};
 		player1.doDamage(enemies.get(target));
-			Timeline Attack = new Timeline(new KeyFrame(Duration.millis(50), movePlayerRight), new KeyFrame(Duration.millis(300), movePlayerLeft), new KeyFrame(Duration.millis(50), moveEnemyLeft), new KeyFrame(Duration.millis(300), moveEnemyRight));
-			Attack.play();
+		player1.animate(combatPane);
 			for (int z = 0; z < enemies.size(); z++) {
 				if (enemies.get(z).getHp() <= 0) {
 					player1.setExp(player1.getExp() + enemies.get(z).getExp());
 					player1.setGold(player1.getGold() + enemies.get(z).getGold());
 					enemies.remove(z);
 					z--;
+				}
+				else {
+					enemies.get(z).animate(combatPane);
+					enemies.get(z).doDamage(player1);
 				}
 			}
 			if (enemies.isEmpty()) {
@@ -432,28 +411,5 @@ public class Display_Game extends Application {
 		intValue = intValue + 1;
 		String newNum = String.valueOf(intValue);
 		return newNum;
-	}
-	public void drawPane(Player player1, ArrayList<Enemy> enemies, Pane combatPane, Scene end, Scene camp, Stage primaryStage) {
-		combatPane.getChildren().clear();
-		Rectangle floor = new Rectangle(0, 0, 750, 500);
-		floor.setFill(Color.DARKGREEN);
-		combatPane.getChildren().add(floor);
-		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
-		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
-		health.setFill(Color.RED);
-		combatPane.getChildren().add(health);
-		for (int i = 0; i < enemies.size(); i++) {
-			combatPane.getChildren().add(enemies.get(i).draw(enemies.get(i).getX(), enemies.get(i).getY()));
-		}
-		TextField targetSelect = new TextField("0"); 
-		Label target = new Label("Target");
-		Button btTarget = new Button("Attack");
-		HBox targeting = new HBox(20);
-		targeting.getChildren().addAll(target, targetSelect, btTarget);
-		combatPane.getChildren().add(targeting);
-		targeting.setAlignment(Pos.BOTTOM_CENTER);
-		btTarget.setOnAction(e -> {
-			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, end, camp, primaryStage);
-		});
 	}
 }
