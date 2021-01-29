@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
 public abstract class Character {
@@ -9,10 +10,10 @@ public abstract class Character {
 	private int exp;
 	private int hp;
 	private int maxHp;
-	private int armor = 1;
-	private int damage = 1;
-	private int attackBonus = 1;
-	private int endurance = 1;
+	private int armor;
+	private int damage;
+	private int attackBonus;
+	private int endurance;
 	private static int gold;
 	Character() {
 	}
@@ -135,4 +136,5 @@ public abstract class Character {
 	public abstract String getName();
 	public abstract String stringHp();
 	public abstract Circle draw(int x, int y);
+	public abstract void animate(Pane pane);
 }
