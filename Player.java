@@ -1,4 +1,3 @@
-
 import javafx.animation.PathTransition;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -34,14 +33,15 @@ public class Player extends Character {
 		return player;
 	}
 	@Override
-	public void animate(Pane pane) {
-		PathTransition pt = new PathTransition();
-		int index = pane.getChildren().indexOf(this);
-		pt.setNode(pane.getChildren().get(index));
-		pt.setPath(new Line(this.getX(), this.getY(), this.getX() + 50, this.getY()));
+	public PathTransition animate(Pane pane) {
+		Line line = new Line(this.getX(), this.getY(), this.getX() + 50, this.getY());
+		line.setOpacity(0);
+		Circle circle = this.draw(this.getX(), this.getY());
+		pane.getChildren().addAll(line, circle);
+		PathTransition pt = new PathTransition(Duration.millis(500), line, circle);
+		pane.getChildren().remove(this);
 		pt.setAutoReverse(true);
 		pt.setCycleCount(2);
-		pt.setDuration(Duration.millis(500));
-		pt.play();
+		return pt;
 	}
 }
