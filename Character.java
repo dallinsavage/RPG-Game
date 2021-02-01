@@ -1,5 +1,5 @@
 import java.util.Scanner;
-
+import javafx.animation.PathTransition;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
@@ -136,5 +136,5 @@ public abstract class Character {
 	public abstract String getName();
 	public abstract String stringHp();
 	public abstract Circle draw(int x, int y);
-	public abstract void animate(Pane pane);
+	public abstract PathTransition animate(Pane pane);
 }
