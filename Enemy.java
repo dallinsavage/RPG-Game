@@ -12,15 +12,15 @@ public abstract class Enemy extends Character {
 	Enemy(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
 		super(newEndurance, newArmor, newDamage, newAttackBonus);
 	}
-	public void animate(Pane pane) {
-		PathTransition pt = new PathTransition();
-		pt.setPath(new Line(this.getX(), this.getY(), this.getX() - 50, this.getY()));
+	public PathTransition animate(Pane pane) {
+		Line line = new Line(this.getX(), this.getY(), this.getX() - 50, this.getY());
+		line.setOpacity(0);
+		Circle circle = this.draw(this.getX(), this.getY());
+		pane.getChildren().addAll(line, circle);
+		PathTransition pt = new PathTransition(Duration.millis(500), line, circle);
 		pt.setAutoReverse(true);
 		pt.setCycleCount(2);
-		pt.setDuration(Duration.millis(500));
-		int index = pane.getChildren().indexOf(this);
-		pt.setNode(pane.getChildren().get(index));
-		pt.play();
+		return pt;
 	}
 }
 
@@ -64,7 +64,7 @@ class Zombie extends Enemy {
 		setY(y);
 		Circle zombie = new Circle(x, y, 20);
 		zombie.setFill(Color.GREEN);
-		zombie.setStroke(Color.GREEN);
+		zombie.setStroke(Color.BLACK);
 		return zombie;
 	}
 }
