@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.PathTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,7 +22,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Display_Game extends Application {
-
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -63,7 +61,7 @@ public class Display_Game extends Application {
 		//Spawn Player
 
 		Label pointsLeft = new Label("Points left");
-		TextField points = new TextField("1");
+		TextField points = new TextField("10");
 		points.setEditable(false);
 		Label armor = new Label("Armor");
 		Label damage = new Label("Damage");
@@ -373,7 +371,7 @@ public class Display_Game extends Application {
 		
 		
 		btTarget.setOnAction(e -> {
-			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, end, camp, primaryStage);
+			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, targeting, end, camp, primaryStage);
 		});
 		
 		primaryStage.setTitle("Spawn");
@@ -381,9 +379,18 @@ public class Display_Game extends Application {
 		primaryStage.show();
 		primaryStage.setResizable(false);		
 	}
-	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target, Pane combatPane, Scene end, Scene camp, Stage primaryStage) {
+	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target, Pane combatPane, Pane targeting, Scene end, Scene camp, Stage primaryStage) {
 		player1.doDamage(enemies.get(target));
-		player1.animate(combatPane);
+		combatPane.getChildren().clear();
+		Rectangle floor = new Rectangle(0, 0, 750, 500);
+		floor.setFill(Color.DARKGREEN);
+		combatPane.getChildren().addAll(floor, targeting);
+		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
+		health.setFill(Color.RED);
+		combatPane.getChildren().add(health);
+		PathTransition pt = player1.animate(combatPane);
+		combatPane.getChildren().remove(player1);
+		pt.play();
 			for (int z = 0; z < enemies.size(); z++) {
 				if (enemies.get(z).getHp() <= 0) {
 					player1.setExp(player1.getExp() + enemies.get(z).getExp());
@@ -392,8 +399,13 @@ public class Display_Game extends Application {
 					z--;
 				}
 				else {
-					enemies.get(z).animate(combatPane);
+					pt = enemies.get(z).animate(combatPane);
+					pt.play();
 					enemies.get(z).doDamage(player1);
+					if (player1.getHp() <= 0) {
+						player1.setHp(0);
+						primaryStage.setScene(end);
+						}
 				}
 			}
 			if (enemies.isEmpty()) {
