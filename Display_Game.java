@@ -1,7 +1,6 @@
 import java.util.ArrayList;
-
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.FadeTransition;
+import javafx.animation.PathTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,13 +13,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Display_Game extends Application {
-
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -31,12 +32,16 @@ public class Display_Game extends Application {
 		Player player1 = new Player();
 		player1.setX(100);
 		player1.setY(250);
-		BorderPane endPane = new BorderPane();
+		player1.setGold(200);
+		StackPane endPane = new StackPane();
 		GridPane spawnPlayerPane = new GridPane();
 		GridPane spawnEnemiesPane = new GridPane();
 		BorderPane campPane = new BorderPane();
 		Pane combatPane = new Pane();
 		GridPane shopPane = new GridPane();
+		shopPane.setStyle("-fx-background-color:rgb(135,206,235); -fx-opacity:1;");
+		spawnPlayerPane.setStyle("-fx-background-color:rgb(135,206,235); -fx-opacity:1;");
+		spawnEnemiesPane.setStyle("-fx-background-color:rgb(135,206,235); -fx-opacity:1;");
 		Scene spawnEnemies = new Scene(spawnEnemiesPane, 750, 500);
 		Scene spawnPlayer = new Scene(spawnPlayerPane, 750, 500);
 		Scene camp = new Scene(campPane, 750, 500);
@@ -47,15 +52,17 @@ public class Display_Game extends Application {
 		// end pane
 		
 		Label die = new Label("You died");
+		die.setTextFill(Color.DARKRED);
+		Rectangle background = new Rectangle(0,0, 750, 500);
 		die.setScaleX(10);
 		die.setScaleY(10);
-		endPane.setCenter(die);
+		endPane.getChildren().addAll(background, die);
 
 		
 		//Spawn Player
 
 		Label pointsLeft = new Label("Points left");
-		TextField points = new TextField("25");
+		TextField points = new TextField("20");
 		points.setEditable(false);
 		Label armor = new Label("Armor");
 		Label damage = new Label("Damage");
@@ -109,6 +116,7 @@ public class Display_Game extends Application {
 				primaryStage.setScene(camp);
 			}
 		});
+		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
 
 		//Spawn Enemies
 		
@@ -170,15 +178,41 @@ public class Display_Game extends Application {
 		Button btRest = new Button("Rest");
 		Button btShop = new Button("Shop");
 		Button btCombat = new Button("Continue Adventure");
-		HBox campHBox = new HBox(200);
+		HBox campHBox = new HBox(230);
+		Rectangle rec1 = new Rectangle(350, 320, 25, 75);
+		Rectangle rec2 = new Rectangle(330, 300, 25, 100);
+		Rectangle rec3 = new Rectangle(370, 300, 25, 100);
+		rec1.setFill(Color.BROWN);
+		rec2.setFill(Color.BROWN);
+		rec3.setFill(Color.BROWN);
+		rec2.setRotate(45);
+		rec3.setRotate(-45);
+		Rectangle sky = new Rectangle(0, 0, 750, 300);
+		sky.setFill(Color.SKYBLUE);
+		Rectangle ground = new Rectangle(0, 300, 750, 200);
+		ground.setFill(Color.DARKGREEN);
+		Rectangle path = new Rectangle(680, 280, 75, 250);
+		Circle pathCircle = new Circle(642, 480, 40);
+		pathCircle.setFill(Color.TAN);
+		path.setRotate(45);
+		path.setFill(Color.TAN);
+		Polygon tent = new Polygon(0, 400, 100, 50, 200, 400);
+		Polygon tent1 = new Polygon(100, 400, 100, 70, 140, 400);
+		Polygon fire1 = new Polygon(330, 350, 300, 270, 340, 320, 360, 270, 380, 320, 420, 270, 400, 350);
+		Polygon fire2 = new Polygon(330, 350, 305, 280, 340, 330, 360, 280, 380, 330, 415, 280, 400, 350);
+		fire2.setFill(Color.YELLOW);
+		fire1.setFill(Color.ORANGE);
+		tent.setFill(Color.DARKOLIVEGREEN);
 		campHBox.setAlignment(Pos.CENTER);
 		campHBox.getChildren().addAll(btRest, btShop, btCombat);
+		campPane.getChildren().addAll(sky, ground, rec1, rec2, rec3, fire1, fire2, tent, tent1, path, pathCircle);
 		campPane.setCenter(campHBox);
 		
 		//Camp events
 		
 		btRest.setOnAction(e -> {
 			player1.rest();
+			message(campPane, "You Feel rested, HP restored");
 		});
 		btShop.setOnAction(e -> {
 			primaryStage.setScene(shop);
@@ -200,7 +234,6 @@ public class Display_Game extends Application {
 		Button back = new Button("Back");
 		shopPane.addColumn(0, btEndurance, btArmor);
 		shopPane.addColumn(1, btStrength, btAttack, back);
-
 		shopPane.setAlignment(Pos.CENTER);
 		shopPane.setHgap(50);
 		shopPane.setVgap(50);
@@ -208,23 +241,47 @@ public class Display_Game extends Application {
 		//Shop events
 		
 		btEndurance.setOnAction(e -> {
+			
 			if (player1.getGold() >= 50) {
+				player1.setGold(player1.getGold() - 50);
 				player1.increaseEndurance(1);
+				messageGrid(shopPane, "Purchase successful");
+			}
+			else {
+				messageGrid(shopPane, "Not enough gold");
 			}
 		});
 		btArmor.setOnAction(e -> {
+			
 			if (player1.getGold() >= 100) {
+				player1.setGold(player1.getGold() - 100);
 				player1.increaseArmor(1);
+				messageGrid(shopPane, "Purchase successful");
+			}
+			else {
+				messageGrid(shopPane, "Not enough gold");
 			}
 		});
 		btStrength.setOnAction(e -> {
+
 			if (player1.getGold() >= 50) {
+				player1.setGold(player1.getGold() - 50);
 				player1.increaseDamage(1);
+				messageGrid(shopPane, "Purchase successful");
+			}
+			else {
+				messageGrid(shopPane, "Not enough gold");
 			}
 		});
 		btAttack.setOnAction(e -> {
+
 			if (player1.getGold() >= 100) {
+				player1.setGold(player1.getGold() - 100);
 				player1.increaseAttackBonus(1);
+				messageGrid(shopPane, "Purchase successful");
+			}
+			else {
+				messageGrid(shopPane, "Not enough gold");
 			}
 		});
 		back.setOnAction(e -> {
@@ -235,6 +292,10 @@ public class Display_Game extends Application {
 		
 		
 		//Combat
+		
+		Rectangle floor = new Rectangle(0, 0, 750, 500);
+		floor.setFill(Color.DARKGREEN);
+		combatPane.getChildren().add(floor);
 		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
 		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
 		health.setFill(Color.RED);
@@ -252,7 +313,7 @@ public class Display_Game extends Application {
 		
 		
 		btTarget.setOnAction(e -> {
-			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, end, camp, primaryStage);
+			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, targeting, end, camp, primaryStage);
 		});
 		
 		primaryStage.setTitle("Spawn");
@@ -260,41 +321,35 @@ public class Display_Game extends Application {
 		primaryStage.show();
 		primaryStage.setResizable(false);		
 	}
-	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target, Pane combatPane, Scene end, Scene camp, Stage primaryStage) {
-		EventHandler<ActionEvent> movePlayerRight = e -> {
-			player1.moveRight();
-			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
-		};
-		EventHandler<ActionEvent> movePlayerLeft = e -> {
-			player1.moveLeft();
-			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
-		};
-		EventHandler<ActionEvent> moveEnemyRight = e -> {
-			for (int x = 0; x < enemies.size(); x++) {
-				enemies.get(x).moveRight();
-			}
-			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
-		};
-		EventHandler<ActionEvent> moveEnemyLeft = e -> {
-			for (int x = 0; x < enemies.size(); x++) {
-				enemies.get(x).doDamage(player1);
-				enemies.get(x).moveLeft();
-				if (player1.getHp() <= 0) {
-				player1.setHp(0);
-				primaryStage.setScene(end);
-				}
-		}
-			drawPane(player1, enemies, combatPane, end, camp, primaryStage);
-		};
+	public void runCombat(ArrayList<Enemy> enemies, Player player1, int target, Pane combatPane, Pane targeting, Scene end, Scene camp, Stage primaryStage) {
 		player1.doDamage(enemies.get(target));
-			Timeline Attack = new Timeline(new KeyFrame(Duration.millis(50), movePlayerRight), new KeyFrame(Duration.millis(300), movePlayerLeft), new KeyFrame(Duration.millis(50), moveEnemyLeft), new KeyFrame(Duration.millis(300), moveEnemyRight));
-			Attack.play();
+		combatPane.getChildren().clear();
+		Rectangle floor = new Rectangle(0, 0, 750, 500);
+		floor.setFill(Color.DARKGREEN);
+		combatPane.getChildren().addAll(floor, targeting);
+		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
+		health.setFill(Color.RED);
+		combatPane.getChildren().add(health);
+		PathTransition pt = player1.animate(combatPane);
+		combatPane.getChildren().remove(player1);
+		pt.play();
 			for (int z = 0; z < enemies.size(); z++) {
 				if (enemies.get(z).getHp() <= 0) {
 					player1.setExp(player1.getExp() + enemies.get(z).getExp());
 					player1.setGold(player1.getGold() + enemies.get(z).getGold());
+					message(combatPane, enemies.get(z).getName() + " was slain " + enemies.get(z).getGold() + " gold recieved");
 					enemies.remove(z);
 					z--;
+				}
+				
+				else {
+					pt = enemies.get(z).animate(combatPane);
+					pt.play();
+					enemies.get(z).doDamage(player1);
+					if (player1.getHp() <= 0) {
+						player1.setHp(0);
+						primaryStage.setScene(end);
+						}
 				}
 			}
 			if (enemies.isEmpty()) {
@@ -313,24 +368,40 @@ public class Display_Game extends Application {
 		String newNum = String.valueOf(intValue);
 		return newNum;
 	}
-	public void drawPane(Player player1, ArrayList<Enemy> enemies, Pane combatPane, Scene end, Scene camp, Stage primaryStage) {
-		combatPane.getChildren().clear();
-		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
-		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
-		health.setFill(Color.RED);
-		combatPane.getChildren().add(health);
-		for (int i = 0; i < enemies.size(); i++) {
-			combatPane.getChildren().add(enemies.get(i).draw(enemies.get(i).getX(), enemies.get(i).getY()));
-		}
-		TextField targetSelect = new TextField("0"); 
-		Label target = new Label("Target");
-		Button btTarget = new Button("Attack");
-		HBox targeting = new HBox(20);
-		targeting.getChildren().addAll(target, targetSelect, btTarget);
-		combatPane.getChildren().add(targeting);
-		targeting.setAlignment(Pos.BOTTOM_CENTER);
-		btTarget.setOnAction(e -> {
-			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, end, camp, primaryStage);
+	public void message(Pane pane, String message) {
+		Label label = new Label();
+		Pane labelPane = new Pane(label);
+		label.setTextFill(Color.BLUE);
+		pane.getChildren().add(labelPane);
+		labelPane.setLayoutY(480);
+		labelPane.setLayoutX(10);
+		label.setText(message);
+		FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
+		ft.setFromValue(1.0);
+		ft.setToValue(0);
+		ft.play();
+		ft.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				pane.getChildren().remove(labelPane);
+			}
+		});
+	}
+	public void messageGrid(GridPane pane, String message) {
+		Label label = new Label();
+		Pane labelPane = new Pane(label);
+		label.setTextFill(Color.BLUE);
+		pane.add(labelPane, 0, 2);
+		label.setText(message);
+		FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
+		ft.setFromValue(1.0);
+		ft.setToValue(0);
+		ft.play();
+		ft.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				pane.getChildren().remove(labelPane);
+			}
 		});
 	}
 }
