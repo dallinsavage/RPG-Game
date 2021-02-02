@@ -32,6 +32,7 @@ public class Display_Game extends Application {
 		Player player1 = new Player();
 		player1.setX(100);
 		player1.setY(250);
+		player1.setGold(200);
 		StackPane endPane = new StackPane();
 		GridPane spawnPlayerPane = new GridPane();
 		GridPane spawnEnemiesPane = new GridPane();
@@ -61,7 +62,7 @@ public class Display_Game extends Application {
 		//Spawn Player
 
 		Label pointsLeft = new Label("Points left");
-		TextField points = new TextField("10");
+		TextField points = new TextField("20");
 		points.setEditable(false);
 		Label armor = new Label("Armor");
 		Label damage = new Label("Damage");
@@ -211,14 +212,7 @@ public class Display_Game extends Application {
 		
 		btRest.setOnAction(e -> {
 			player1.rest();
-			Label label = new Label("You Feel rested, HP restored");
-			Pane pane = new Pane(label);
-			label.setTextFill(Color.BLUE);
-			campPane.setBottom(pane);
-			FadeTransition ft = new FadeTransition(Duration.seconds(3.0), label);
-			ft.setFromValue(1.0);
-			ft.setToValue(0);
-			ft.play();
+			message(campPane, "You Feel rested, HP restored");
 		});
 		btShop.setOnAction(e -> {
 			primaryStage.setScene(shop);
@@ -247,100 +241,48 @@ public class Display_Game extends Application {
 		//Shop events
 		
 		btEndurance.setOnAction(e -> {
-			Label label = new Label();
-			Pane pane = new Pane(label);
-			label.setTextFill(Color.BLUE);
-			shopPane.add(pane, 0, 2);
-			FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
-			ft.setFromValue(1.0);
-			ft.setToValue(0);
+			
 			if (player1.getGold() >= 50) {
 				player1.setGold(player1.getGold() - 50);
 				player1.increaseEndurance(1);
-				label.setText("Purchase successful");
+				messageGrid(shopPane, "Purchase successful");
 			}
 			else {
-				label.setText("Not enough gold");
+				messageGrid(shopPane, "Not enough gold");
 			}
-			ft.play();
-			ft.setOnFinished(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					shopPane.getChildren().remove(pane);
-				}
-			});
 		});
 		btArmor.setOnAction(e -> {
-			Label label = new Label();
-			Pane pane = new Pane(label);
-			label.setTextFill(Color.BLUE);
-			shopPane.add(pane, 0, 2);
-			FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
-			ft.setFromValue(1.0);
-			ft.setToValue(0.1);
+			
 			if (player1.getGold() >= 100) {
 				player1.setGold(player1.getGold() - 100);
 				player1.increaseArmor(1);
-				label.setText("Purchase successful");
+				messageGrid(shopPane, "Purchase successful");
 			}
 			else {
-				label.setText("Not enough gold");
+				messageGrid(shopPane, "Not enough gold");
 			}
-			ft.play();
-			ft.setOnFinished(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					shopPane.getChildren().remove(pane);
-				}
-			});
 		});
 		btStrength.setOnAction(e -> {
-			Label label = new Label();
-			Pane pane = new Pane(label);
-			label.setTextFill(Color.BLUE);
-			shopPane.add(pane, 0, 2);
-			FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
-			ft.setFromValue(1.0);
-			ft.setToValue(0.1);
+
 			if (player1.getGold() >= 50) {
 				player1.setGold(player1.getGold() - 50);
 				player1.increaseDamage(1);
-				label.setText("Purchase successful");
+				messageGrid(shopPane, "Purchase successful");
 			}
 			else {
-				label.setText("Not enough gold");
+				messageGrid(shopPane, "Not enough gold");
 			}
-			ft.play();
-			ft.setOnFinished(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					shopPane.getChildren().remove(pane);
-				}
-			});
 		});
 		btAttack.setOnAction(e -> {
-			Label label = new Label();
-			Pane pane = new Pane(label);
-			label.setTextFill(Color.BLUE);
-			shopPane.add(pane, 0, 2);
-			FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
-			ft.setFromValue(1.0);
-			ft.setToValue(0.1);
+
 			if (player1.getGold() >= 100) {
 				player1.setGold(player1.getGold() - 100);
 				player1.increaseAttackBonus(1);
-				label.setText("Purchase successful");
+				messageGrid(shopPane, "Purchase successful");
 			}
 			else {
-				label.setText("Not enough gold");
+				messageGrid(shopPane, "Not enough gold");
 			}
-			ft.play();
-			ft.setOnFinished(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					shopPane.getChildren().remove(pane);
-				}
-			});
 		});
 		back.setOnAction(e -> {
 			primaryStage.setScene(camp);
@@ -395,9 +337,11 @@ public class Display_Game extends Application {
 				if (enemies.get(z).getHp() <= 0) {
 					player1.setExp(player1.getExp() + enemies.get(z).getExp());
 					player1.setGold(player1.getGold() + enemies.get(z).getGold());
+					message(combatPane, enemies.get(z).getName() + " was slain " + enemies.get(z).getGold() + " gold recieved");
 					enemies.remove(z);
 					z--;
 				}
+				
 				else {
 					pt = enemies.get(z).animate(combatPane);
 					pt.play();
@@ -423,5 +367,41 @@ public class Display_Game extends Application {
 		intValue = intValue + 1;
 		String newNum = String.valueOf(intValue);
 		return newNum;
+	}
+	public void message(Pane pane, String message) {
+		Label label = new Label();
+		Pane labelPane = new Pane(label);
+		label.setTextFill(Color.BLUE);
+		pane.getChildren().add(labelPane);
+		labelPane.setLayoutY(480);
+		labelPane.setLayoutX(10);
+		label.setText(message);
+		FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
+		ft.setFromValue(1.0);
+		ft.setToValue(0);
+		ft.play();
+		ft.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				pane.getChildren().remove(labelPane);
+			}
+		});
+	}
+	public void messageGrid(GridPane pane, String message) {
+		Label label = new Label();
+		Pane labelPane = new Pane(label);
+		label.setTextFill(Color.BLUE);
+		pane.add(labelPane, 0, 2);
+		label.setText(message);
+		FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
+		ft.setFromValue(1.0);
+		ft.setToValue(0);
+		ft.play();
+		ft.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				pane.getChildren().remove(labelPane);
+			}
+		});
 	}
 }
