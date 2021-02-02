@@ -6,7 +6,7 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 public abstract class Enemy extends Character {
-	
+	private int enemyGold;
 	Enemy() {
 	}
 	Enemy(int newEndurance, int newArmor, int newDamage, int newAttackBonus) {
@@ -22,6 +22,12 @@ public abstract class Enemy extends Character {
 		pt.setCycleCount(2);
 		return pt;
 	}
+	public int getEnemyGold() {
+		return enemyGold;
+	}
+	public void setEnemyGold(int newGold) {
+		enemyGold = newGold;
+	}
 }
 
 
@@ -29,7 +35,7 @@ class Skeleton extends Enemy {
 	Skeleton() {
 		super(3, 3, 3, 4);
 		setExp(10);
-		setGold((int)(Math.random() * 10));
+		setEnemyGold((int)(Math.random() * 10));
 	}
 	public String stringHp() {
 		return "hp = " + getHp();
@@ -51,7 +57,7 @@ class Zombie extends Enemy {
 	Zombie() {
 		super(2, 2, 5, 3);
 		setExp(10);
-		setGold((int)(Math.random() * 10));
+		setEnemyGold((int)(Math.random() * 10));
 	}
 	public String stringHp() {
 		return "hp = " + getHp();
@@ -73,7 +79,7 @@ class Tank extends Enemy {
 	Tank() {
 		super(5, 4, 1, 3);
 		setExp(15);
-		setGold((int)(Math.random() * 20));
+		setEnemyGold((int)(Math.random() * 20));
 	}
 	public String stringHp() {
 		return "hp = " + getHp();
@@ -94,7 +100,7 @@ class Boss extends Enemy {
 	Boss() {
 		super(10, 4, 5, 3);
 		setExp(150);
-		setGold((int)(Math.random() * 100) + 50);
+		setEnemyGold((int)(Math.random() * 100) + 50);
 	}
 	public String stringHp() {
 		return "hp = " + getHp();
