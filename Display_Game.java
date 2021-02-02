@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Display_Game extends Application {
-	
 	public static void main(String[] args) {
 		launch(args);
 
@@ -68,6 +67,14 @@ public class Display_Game extends Application {
 		Label damage = new Label("Damage");
 		Label attackBonus = new Label("Attack Bonus");
 		Label endurance = new Label("Endurance");
+		TextField armorNum = new TextField(String.valueOf(player1.getArmor()));
+		armorNum.setEditable(false);
+		TextField damageNum = new TextField(String.valueOf(player1.getDamage()));
+		damageNum.setEditable(false);
+		TextField attackBonusNum = new TextField(String.valueOf(player1.getAttackBonus()));
+		attackBonusNum.setEditable(false);
+		TextField enduranceNum = new TextField(String.valueOf(player1.getEndurance()));
+		enduranceNum.setEditable(false);
 		Button plusArmor = new Button("+");
 		Button plusDamage = new Button("+");
 		Button plusAttackBonus = new Button("+");
@@ -75,6 +82,8 @@ public class Display_Game extends Application {
 		spawnPlayerPane.setAlignment(Pos.CENTER);
 		spawnPlayerPane.addColumn(0, pointsLeft, armor, damage, attackBonus, endurance);
 		spawnPlayerPane.addColumn(1, points, plusArmor, plusDamage, plusAttackBonus, plusEndurance);
+		spawnPlayerPane.addRow(1, armorNum);
+		spawnPlayerPane.addColumn(2, damageNum, attackBonusNum, enduranceNum);
 		
 		
 		//Spawn Player events
@@ -83,6 +92,7 @@ public class Display_Game extends Application {
 			if (!points.getText().equals("1")) {
 			player1.increaseArmor(1);
 			points.setText(countDown(points.getText()));
+			armorNum.setText(countUp(armorNum.getText()));
 		}
 			else {
 				primaryStage.setScene(camp);
@@ -92,6 +102,7 @@ public class Display_Game extends Application {
 			if (!points.getText().equals("1")) {
 			player1.increaseDamage(1);
 			points.setText(countDown(points.getText()));
+			damageNum.setText(countUp(damageNum.getText()));
 			}
 			else {
 				primaryStage.setScene(camp);
@@ -101,6 +112,7 @@ public class Display_Game extends Application {
 			if (!points.getText().equals("1")) {
 			player1.increaseAttackBonus(1);
 			points.setText(countDown(points.getText()));
+			attackBonusNum.setText(countUp(attackBonusNum.getText()));
 			}
 			else {
 				primaryStage.setScene(camp);
@@ -111,6 +123,7 @@ public class Display_Game extends Application {
 			player1.increaseEndurance(1);
 			player1.setHp(player1.getMaxHp());
 			points.setText(countDown(points.getText()));
+			enduranceNum.setText(countUp(enduranceNum.getText()));
 			}
 			else {
 				primaryStage.setScene(camp);
@@ -137,6 +150,7 @@ public class Display_Game extends Application {
 		
 		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 		spawn.setOnAction(e -> {
+			System.out.println(player1.getGold());
 		primaryStage.setScene(combat);
 		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
 		health.setFill(Color.RED);
@@ -163,6 +177,14 @@ public class Display_Game extends Application {
 				enemies.get(i).setX(500);
 				enemies.get(i).setY(400 / enemies.size() + i * 50);
 			combatPane.getChildren().add(enemies.get(i).draw(enemies.get(i).getX(), enemies.get(i).getY()));
+			Rectangle enemyHealth = new Rectangle(enemies.get(i).getX() - 20,enemies.get(i).getY() - 20, enemies.get(i).getHp(), 10);
+			enemyHealth.setFill(Color.RED);
+			combatPane.getChildren().add(enemyHealth);
+			Label label = new Label(String.valueOf(i));
+			label.setLayoutX(enemies.get(i).getX());
+			label.setLayoutY(enemies.get(i).getY());
+			combatPane.getChildren().add(label);
+			
 		}
 			else {
 				enemies.get(i).setX(500);
@@ -232,7 +254,8 @@ public class Display_Game extends Application {
 		Button btStrength = new Button("Potion of strength (50g)");
 		Button btAttack = new Button("Better Weapon (100g)");
 		Button back = new Button("Back");
-		shopPane.addColumn(0, btEndurance, btArmor);
+		Label gold = new Label("Player Gold: " + String.valueOf(player1.getGold()));
+		shopPane.addColumn(0, btEndurance, btArmor, gold);
 		shopPane.addColumn(1, btStrength, btAttack, back);
 		shopPane.setAlignment(Pos.CENTER);
 		shopPane.setHgap(50);
@@ -246,6 +269,7 @@ public class Display_Game extends Application {
 				player1.setGold(player1.getGold() - 50);
 				player1.increaseEndurance(1);
 				messageGrid(shopPane, "Purchase successful");
+				gold.setText("Player Gold: " + String.valueOf(player1.getGold()));
 			}
 			else {
 				messageGrid(shopPane, "Not enough gold");
@@ -257,6 +281,7 @@ public class Display_Game extends Application {
 				player1.setGold(player1.getGold() - 100);
 				player1.increaseArmor(1);
 				messageGrid(shopPane, "Purchase successful");
+				gold.setText("Player Gold: " + String.valueOf(player1.getGold()));
 			}
 			else {
 				messageGrid(shopPane, "Not enough gold");
@@ -268,6 +293,7 @@ public class Display_Game extends Application {
 				player1.setGold(player1.getGold() - 50);
 				player1.increaseDamage(1);
 				messageGrid(shopPane, "Purchase successful");
+				gold.setText("Player Gold: " + String.valueOf(player1.getGold()));
 			}
 			else {
 				messageGrid(shopPane, "Not enough gold");
@@ -279,6 +305,7 @@ public class Display_Game extends Application {
 				player1.setGold(player1.getGold() - 100);
 				player1.increaseAttackBonus(1);
 				messageGrid(shopPane, "Purchase successful");
+				gold.setText("Player Gold: " + String.valueOf(player1.getGold()));
 			}
 			else {
 				messageGrid(shopPane, "Not enough gold");
@@ -313,6 +340,7 @@ public class Display_Game extends Application {
 		
 		
 		btTarget.setOnAction(e -> {
+			System.out.println(player1.getGold());
 			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, targeting, end, camp, primaryStage);
 		});
 		
@@ -334,6 +362,7 @@ public class Display_Game extends Application {
 		combatPane.getChildren().remove(player1);
 		pt.play();
 			for (int z = 0; z < enemies.size(); z++) {
+				System.out.println(player1.getGold());
 				if (enemies.get(z).getHp() <= 0) {
 					player1.setExp(player1.getExp() + enemies.get(z).getExp());
 					player1.setGold(player1.getGold() + enemies.get(z).getGold());
@@ -350,6 +379,15 @@ public class Display_Game extends Application {
 						player1.setHp(0);
 						primaryStage.setScene(end);
 						}
+				}
+				for (int x = 0; x < enemies.size(); x++) {
+					Rectangle enemyHealth = new Rectangle(enemies.get(x).getX() - 20,enemies.get(x).getY() - 20, enemies.get(x).getHp(), 10);
+					enemyHealth.setFill(Color.RED);
+					combatPane.getChildren().add(enemyHealth);
+					Label label = new Label(String.valueOf(x));
+					label.setLayoutX(enemies.get(x).getX());
+					label.setLayoutY(enemies.get(x).getY());
+					combatPane.getChildren().add(label);
 				}
 			}
 			if (enemies.isEmpty()) {
@@ -391,7 +429,7 @@ public class Display_Game extends Application {
 		Label label = new Label();
 		Pane labelPane = new Pane(label);
 		label.setTextFill(Color.BLUE);
-		pane.add(labelPane, 0, 2);
+		pane.add(labelPane, 0, 3);
 		label.setText(message);
 		FadeTransition ft = new FadeTransition(Duration.seconds(1.0), label);
 		ft.setFromValue(1.0);
