@@ -28,10 +28,10 @@ public class Display_Game extends Application {
 	}
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		Label gold = new Label();
 		Player player1 = new Player();
 		player1.setX(100);
 		player1.setY(250);
-		player1.setGold(200);
 		StackPane endPane = new StackPane();
 		GridPane spawnPlayerPane = new GridPane();
 		GridPane spawnEnemiesPane = new GridPane();
@@ -150,7 +150,6 @@ public class Display_Game extends Application {
 		
 		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 		spawn.setOnAction(e -> {
-			System.out.println(player1.getGold());
 		primaryStage.setScene(combat);
 		Rectangle health = new Rectangle(player1.getX(), player1.getY() - 50, player1.getHp(), 10);
 		health.setFill(Color.RED);
@@ -239,6 +238,7 @@ public class Display_Game extends Application {
 		btShop.setOnAction(e -> {
 			primaryStage.setScene(shop);
 			primaryStage.setTitle("Shop");
+			gold.setText("Player Gold: " + String.valueOf(player1.getGold()));
 		});
 		btCombat.setOnAction(e -> {
 			primaryStage.setScene(spawnEnemies);
@@ -254,7 +254,6 @@ public class Display_Game extends Application {
 		Button btStrength = new Button("Potion of strength (50g)");
 		Button btAttack = new Button("Better Weapon (100g)");
 		Button back = new Button("Back");
-		Label gold = new Label("Player Gold: " + String.valueOf(player1.getGold()));
 		shopPane.addColumn(0, btEndurance, btArmor, gold);
 		shopPane.addColumn(1, btStrength, btAttack, back);
 		shopPane.setAlignment(Pos.CENTER);
@@ -340,7 +339,6 @@ public class Display_Game extends Application {
 		
 		
 		btTarget.setOnAction(e -> {
-			System.out.println(player1.getGold());
 			runCombat(enemies, player1, Integer.parseInt(targetSelect.getText()), combatPane, targeting, end, camp, primaryStage);
 		});
 		
@@ -362,11 +360,10 @@ public class Display_Game extends Application {
 		combatPane.getChildren().remove(player1);
 		pt.play();
 			for (int z = 0; z < enemies.size(); z++) {
-				System.out.println(player1.getGold());
 				if (enemies.get(z).getHp() <= 0) {
 					player1.setExp(player1.getExp() + enemies.get(z).getExp());
-					player1.setGold(player1.getGold() + enemies.get(z).getGold());
-					message(combatPane, enemies.get(z).getName() + " was slain " + enemies.get(z).getGold() + " gold recieved");
+					player1.setGold(player1.getGold() + enemies.get(z).getEnemyGold());
+					message(combatPane, enemies.get(z).getName() + " was slain " + enemies.get(z).getEnemyGold() + " gold recieved");
 					enemies.remove(z);
 					z--;
 				}
