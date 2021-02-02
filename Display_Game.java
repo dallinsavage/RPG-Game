@@ -48,6 +48,14 @@ public class Display_Game extends Application {
 		Scene combat = new Scene(combatPane, 750, 500);
 		Scene shop = new Scene(shopPane, 750, 500);
 		Scene end = new Scene(endPane,750, 500);
+		TextField armorNum = new TextField(String.valueOf(player1.getArmor()));
+		armorNum.setEditable(false);
+		TextField damageNum = new TextField(String.valueOf(player1.getDamage()));
+		damageNum.setEditable(false);
+		TextField attackBonusNum = new TextField(String.valueOf(player1.getAttackBonus()));
+		attackBonusNum.setEditable(false);
+		TextField enduranceNum = new TextField(String.valueOf(player1.getEndurance()));
+		enduranceNum.setEditable(false);
 		
 		// end pane
 		
@@ -62,6 +70,15 @@ public class Display_Game extends Application {
 		endPane.getChildren().add(startOver);
 		
 		startOver.setOnAction(e -> {
+			player1.setArmor(0);
+			player1.setDamage(0);
+			player1.setEndurance(0);
+			player1.setAttackBonus(0);
+			player1.setGold(0);
+			armorNum.setText("0");
+			damageNum.setText("0");
+			enduranceNum.setText("0");
+			attackBonusNum.setText("0");
 			points.setText("20");
 			primaryStage.setScene(spawnPlayer);
 			primaryStage.setTitle("Spawn Player");
@@ -76,14 +93,6 @@ public class Display_Game extends Application {
 		Label damage = new Label("Damage");
 		Label attackBonus = new Label("Attack Bonus");
 		Label endurance = new Label("Endurance");
-		TextField armorNum = new TextField(String.valueOf(player1.getArmor()));
-		armorNum.setEditable(false);
-		TextField damageNum = new TextField(String.valueOf(player1.getDamage()));
-		damageNum.setEditable(false);
-		TextField attackBonusNum = new TextField(String.valueOf(player1.getAttackBonus()));
-		attackBonusNum.setEditable(false);
-		TextField enduranceNum = new TextField(String.valueOf(player1.getEndurance()));
-		enduranceNum.setEditable(false);
 		Button plusArmor = new Button("+");
 		Button plusDamage = new Button("+");
 		Button plusAttackBonus = new Button("+");
