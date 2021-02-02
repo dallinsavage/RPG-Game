@@ -29,6 +29,7 @@ public class Display_Game extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Label gold = new Label();
+		TextField points = new TextField("20");
 		Player player1 = new Player();
 		player1.setX(100);
 		player1.setY(250);
@@ -56,12 +57,20 @@ public class Display_Game extends Application {
 		die.setScaleX(10);
 		die.setScaleY(10);
 		endPane.getChildren().addAll(background, die);
+		Button startOver = new Button("Start over");
+		startOver.setTranslateY(200);
+		endPane.getChildren().add(startOver);
+		
+		startOver.setOnAction(e -> {
+			points.setText("20");
+			primaryStage.setScene(spawnPlayer);
+			primaryStage.setTitle("Spawn Player");
+		});
 
 		
 		//Spawn Player
 
 		Label pointsLeft = new Label("Points left");
-		TextField points = new TextField("20");
 		points.setEditable(false);
 		Label armor = new Label("Armor");
 		Label damage = new Label("Damage");
@@ -96,6 +105,7 @@ public class Display_Game extends Application {
 		}
 			else {
 				primaryStage.setScene(camp);
+				primaryStage.setTitle("Camp");
 			}
 		});
 		plusDamage.setOnAction(e -> {
@@ -106,6 +116,7 @@ public class Display_Game extends Application {
 			}
 			else {
 				primaryStage.setScene(camp);
+				primaryStage.setTitle("Camp");
 			}
 		});
 		plusAttackBonus.setOnAction(e -> {
@@ -116,6 +127,7 @@ public class Display_Game extends Application {
 			}
 			else {
 				primaryStage.setScene(camp);
+				primaryStage.setTitle("Camp");
 			}
 		});
 		plusEndurance.setOnAction(e -> {
@@ -127,6 +139,7 @@ public class Display_Game extends Application {
 			}
 			else {
 				primaryStage.setScene(camp);
+				primaryStage.setTitle("Camp");
 			}
 		});
 		combatPane.getChildren().add(player1.draw(player1.getX(), player1.getY()));
